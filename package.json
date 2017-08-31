@@ -1,0 +1,52 @@
+{
+  "name": "swiftprint",
+  "version": "1.0.0",
+  "author": "",
+  "license": "ISC",
+  "scripts": {
+    "dev": "DEBUG=print-and-send node server",
+    "build": "next build",
+    "start": "DEBUG=print-and-send NODE_ENV=production node server",
+    "test": "NODE_ENV=test ava"
+  },
+  "dependencies": {
+    "aws-sdk": "^2.106.0",
+    "body-parser": "^1.17.2",
+    "cookie": "^0.3.1",
+    "debug": "^3.0.1",
+    "dotenv": "^4.0.0",
+    "express": "^4.15.4",
+    "graphql": "^0.9.3",
+    "isomorphic-fetch": "^2.2.1",
+    "jss": "^8.1.0",
+    "jss-preset-default": "^3.0.0",
+    "lob": "^4.1.1",
+    "material-ui": "^1.0.0-beta.7",
+    "material-ui-icons": "^1.0.0-beta.5",
+    "next": "latest",
+    "prop-types": "^15.5.10",
+    "react": "^15.5.4",
+    "react-apollo": "^1.1.3",
+    "react-dom": "^15.5.4",
+    "react-dropzone": "^4.1.0",
+    "react-jss": "^7.1.0",
+    "recompose": "^0.25.0",
+    "s3-upload-stream": "^1.0.7",
+    "scissors": "^0.2.3",
+    "stream": "0.0.2",
+    "uuid": "^3.1.0",
+    "ws": "^3.1.0",
+    "zlib": "^1.0.5"
+  },
+  "devDependencies": {
+    "ava": "^0.19.1",
+    "clear-require": "^2.0.0",
+    "glob": "^7.1.2"
+  },
+  "ava": {
+    "require": [
+      "babel-register"
+    ],
+    "babel": "inherit"
+  }
+}
