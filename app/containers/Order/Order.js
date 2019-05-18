@@ -138,7 +138,7 @@ class Order extends React.Component {
     await new Promise((resolve, reject) => this.setState({ open: undefined }, resolve))
     const { order: { data: { currentOrder } } } = this.props
 
-    let createLetterMutation = await this.props.client.mutate({
+    const createLetterMutation = await this.props.client.mutate({
       mutation: CREATE_LETTER,
       variables: {
         orderId: currentOrder.id
@@ -147,14 +147,14 @@ class Order extends React.Component {
       throw err
     })
 
-    let { data: { createLetter } } = createLetterMutation
-    let createChargeMutation = await this.props.client.mutate({
+    const { data: { createLetter } } = createLetterMutation
+    const createChargeMutation = await this.props.client.mutate({
       mutation: CREATE_CHARGE,
       variables: {
         orderId: currentOrder.id
       }
     })
-    let { data: { createCharge } } = createChargeMutation
+    const { data: { createCharge } } = createChargeMutation
     this.props.client.writeQuery({
       query: ORDER_QUERY,
       data: {
@@ -385,7 +385,7 @@ class OrderMutations extends React.Component {
       <Query query={USER_QUERY}>
         {(user) => {
           if (user.error) {
-            window.localStorage.removeItem('item')
+            window.localStorage.removeItem('token')
             this.props.history.push('/')
           }
           return (
