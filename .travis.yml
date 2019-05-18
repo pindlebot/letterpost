@@ -12,6 +12,7 @@ before_deploy:
   - ./bin/up version
   - NODE_ENV=production yarn build
   - cp node_modules/pdfjs-dist/build/pdf.worker.js ./dist
+  - sh bin/vault.sh
 deploy:
   provider: script
   script: ./bin/up deploy production
