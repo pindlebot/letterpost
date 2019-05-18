@@ -1,0 +1,53 @@
+service: letterpost-ghostscript
+
+plugins:
+  - serverless-pseudo-parameters
+
+custom: 
+  bucket: 'global-deployment-bucket'
+  region: 'us-east-1'
+  thumbnailsBucket: 'letterpost'
+
+provider:
+  name: aws
+  runtime: nodejs8.10
+  region: us-east-1
+  timeout: 300
+  environment:
+    AWS_BUCKET: ${self:custom.thumbnailsBucket}
+    WRAPUP_TOPIC_ARN: arn:aws:sns:#{AWS::Region}:#{AWS::AccountId}:letterpost-wrapup
+    GHOSTSCRIPT_TOPIC_ARN: arn:aws:sns:#{AWS::Region}:#{AWS::AccountId}:letterpost-ghostscript
+    VERAPDF_TOPIC_ARN: arn:aws:sns:#{AWS::Region}:#{AWS::AccountId}:letterpost-verapdf
+
+  deploymentBucket:
+    name: ${self:custom.bucket}
+  iamRoleStatements:
+    - Effect: Allow
+      Action:
+        - s3:*
+      Resource: "*"
+    - Effect: Allow
+      Action:
+        - sns:*
+      Resource: "*"
+
+functions:
+  worker: 
+    handler: src/worker.handler
+    timeout: 300
+    events:
+      - sns: letterpost-ghostscript
+  pdfThumbnail:
+    handler: src/pdf-thumbnail.handler
+    timeout: 300
+    events:
+      - sns: letterpost-pdf-thumbnail
+
+resources:
+  Resources:
+    WorkerLogGroup:
+      Properties:
+        RetentionInDays: 7
+    PdfThumbnailLogGroup:
+      Properties:
+        RetentionInDays: 7

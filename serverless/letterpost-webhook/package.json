@@ -1,0 +1,12 @@
+{
+  "name": "letterpost-webhook",
+  "version": "0.0.1",
+  "description": "",
+  "main": "handler.js",
+  "dependencies": {
+    "dynamodb-tools": "^0.0.70"
+  },
+  "devDependencies": {
+    "serverless-domain-manager": "^2.6.5"
+  }
+}

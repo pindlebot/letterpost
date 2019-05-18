@@ -1,0 +1,47 @@
+service: letterpost-verapdf
+
+plugins:
+  - serverless-pseudo-parameters
+
+custom:
+  bucket: global-deployment-bucket
+  topic: letterpost-verapdf
+
+provider:
+  name: aws
+  runtime: nodejs8.10
+  region: us-east-1
+  environment:
+    SNS_TOPIC_ARN: arn:aws:sns:#{AWS::Region}:#{AWS::AccountId}:${self:custom.topic}
+    VERAPDF_ZIP_URL: https://s3.amazonaws.com/aws-lambda-binaries/verapdf.zip 
+  deploymentBucket:
+    name: ${self:custom.bucket}
+  iamRoleStatements:
+    - Effect: "Allow"
+      Resource: "*"
+      Action:
+        - "sns:*"
+
+functions:
+  worker:
+    timeout: 300
+    handler: src/worker.handler
+    memorySize: 2048
+    events:
+      - sns: ${self:custom.topic}
+  handler: 
+    handler: src/handler.handler
+    events:
+      - http:
+          path: /
+          method: post
+          cors: true
+
+resources:
+  Resources:
+    HandlerLogGroup:
+      Properties:
+        RetentionInDays: 7
+    WorkerLogGroup:
+      Properties:
+        RetentionInDays: 7

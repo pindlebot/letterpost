@@ -1,0 +1,35 @@
+{
+  "name": "letterpost-graphql",
+  "dependencies": {
+    "apollo-errors": "^1.5.1",
+    "apollo-server-lambda": "^2.0.0",
+    "aws4": "^1.7.0",
+    "bcryptjs": "^2.4.3",
+    "dynamodb-tools": "^0.0.68",
+    "graphql": "^0.13.2",
+    "graphql-tag": "^2.4.2",
+    "graphql-type-json": "^0.2.1",
+    "jsonwebtoken": "^8.0.1",
+    "lob": "^4.1.1",
+    "lodash.camelcase": "^4.3.0",
+    "lodash.mapkeys": "^4.6.0",
+    "lodash.pick": "^4.4.0",
+    "lodash.snakecase": "^4.1.1",
+    "mime-types": "^2.1.19",
+    "query-string": "^6.1.0",
+    "stripe": "^5.1.1"
+  },
+  "devDependencies": {
+    "aws-sdk": "^2.311.0",
+    "eslint": "^5.5.0",
+    "graphql-request": "^1.8.2",
+    "jest": "^23.5.0",
+    "serverless-domain-manager": "^2.6.5",
+    "serverless-pseudo-parameters": "^2.2.0",
+    "snazzy": "^8.0.0",
+    "standard": "^12.0.1"
+  },
+  "scripts": {
+    "lint": "standard \"src/**/*.js\" --fix | snazzy"
+  }
+}

@@ -1,0 +1,13 @@
+{
+  "name": "letterpost-session",
+  "version": "0.0.1",
+  "description": "",
+  "main": "handler.js",
+  "dependencies": {
+    "dynamodb-tools": "^0.0.68",
+    "jsonwebtoken": "^8.3.0"
+  },
+  "devDependencies": {
+    "serverless-domain-manager": "^2.6.5"
+  }
+}

@@ -1,0 +1,527 @@
+service: letterpost-graphql
+plugins:
+  - serverless-pseudo-parameters
+  - serverless-domain-manager
+package:
+  individually: true
+  exclude:
+    - "**/*"
+
+custom:
+  region: us-east-1
+  deploymentBucket: 'global-deployment-bucket'
+  customDomain:
+    domainName: graphql.letterpost.co
+    stage: ${self:provider.stage}
+    certificateName: 'letterpost.co'
+    createRoute53Record: true
+  
+provider:
+  stage: prod
+  name: aws
+  runtime: nodejs8.10
+  region: us-east-1
+  deploymentBucket:
+    name: ${self:custom.deploymentBucket}
+  environment:
+    DYNAMODB_PREFIX: ${self:service}-${opt:stage, self:provider.stage}
+    CLIENT_SESSION_ID: ${ssm:/printawesome-api/CLIENT_SESSION_ID}
+    CLIENT_SESSION_SECRET: ${ssm:/printawesome-api/CLIENT_SESSION_SECRET~true}
+    CLIENT_AUTH_ID: ${ssm:/printawesome-api/CLIENT_AUTH_ID}
+    STRIPE_TEST_API_KEY: ${ssm:/printawesome-api/STRIPE_TEST_API_KEY~true}
+    STRIPE_PRODUCTION_API_KEY: ${ssm:/printawesome-api/STRIPE_PRODUCTION_API_KEY~true}
+    LOB_PRODUCTION_API_KEY: ${ssm:/printawesome-api/LOB_PRODUCTION_API_KEY~true}
+    LOB_TEST_API_KEY: ${ssm:/printawesome-api/LOB_TEST_API_KEY~true}
+    PRINTAWESOME_API_KEY: ${ssm:/printawesome-api/PRINTAWESOME_API_KEY~true}
+    HEAL_SQS_QUEUE_URL: https://sqs.us-east-1.amazonaws.com/#{AWS::AccountId}/letterpost-heal
+    AWS_BUCKET: letterpost
+    SES_TOPIC_ARN: arn:aws:sns:#{AWS::Region}:#{AWS::AccountId}:letterpost-email
+    AWS_ACCOUNT_ID: '#{AWS::AccountId}'
+  iamRoleStatements:
+    - Effect: Allow
+      Action:
+        - s3:*
+      Resource: "*"
+    - Effect: Allow
+      Action:
+        - dynamodb:*
+      Resource: "*"
+    - Effect: Allow
+      Action:
+        - sqs:*
+      Resource: "*"
+    - Effect: Allow
+      Action:
+        - ses:*
+      Resource: "*"
+    - Effect: Allow
+      Action:
+        - sns:*
+      Resource: "*"
+
+functions:
+  heal:
+    handler: src/heal/handler.handler
+    package:
+      include:
+        - src/heal/**
+        - node_modules/dynamodb-tools/**
+    events:
+      - schedule: rate(5 minutes)
+  graphql:
+    handler: src/graphql/handler.handler
+    package:
+      include:
+        - src/graphql/**
+        - node_modules/**
+    events:
+      - http:
+          path: graphql
+          method: post
+          integration: lambda-proxy
+          authorizer: auth
+          cors: true
+      - http:
+          path: graphql
+          method: get
+          integration: lambda-proxy
+          authorizer: auth
+          cors: true
+      - http:
+          path: graphiql
+          method: get
+          cors: true
+  auth:
+    handler: src/authorizer/handler.handler
+    package:
+      include:
+        - src/authorizer/**
+        - node_modules/**
+
+  record:
+    handler: src/record/handler.handler
+    package:
+      include:
+        - src/record/**
+        - node_modules/dynamodb-tools/**
+    events:
+      - stream:
+          type: dynamodb
+          arn:
+            Fn::GetAtt:
+              - UsersDynamoDbTable
+              - StreamArn
+          batchSize: 1
+      - stream:
+          type: dynamodb
+          arn:
+            Fn::GetAtt:
+              - UploadsDynamoDbTable
+              - StreamArn
+          batchSize: 1
+      - stream:
+          type: dynamodb
+          arn:
+            Fn::GetAtt:
+              - OrdersDynamoDbTable
+              - StreamArn
+          batchSize: 1
+      - stream:
+          type: dynamodb
+          arn:
+            Fn::GetAtt:
+              - ContactsDynamoDbTable
+              - StreamArn
+          batchSize: 1
+      - stream:
+          type: dynamodb
+          arn:
+            Fn::GetAtt:
+              - CardsDynamoDbTable
+              - StreamArn
+          batchSize: 1
+      - stream:
+          type: dynamodb
+          arn:
+            Fn::GetAtt:
+              - ChargesDynamoDbTable
+              - StreamArn
+          batchSize: 1
+      - stream:
+          type: dynamodb
+          arn:
+            Fn::GetAtt:
+              - LettersDynamoDbTable
+              - StreamArn
+          batchSize: 1
+      - stream:
+          type: dynamodb
+          arn:
+            Fn::GetAtt:
+              - EventsDynamoDbTable
+              - StreamArn
+          batchSize: 1
+      - stream:
+          type: dynamodb
+          arn:
+            Fn::GetAtt:
+              - MessagesDynamoDbTable
+              - StreamArn
+          batchSize: 1
+      - stream:
+          type: dynamodb
+          arn:
+            Fn::GetAtt:
+              - AddressesDynamoDbTable
+              - StreamArn
+          batchSize: 1
+      - stream:
+          type: dynamodb
+          arn:
+            Fn::GetAtt:
+              - OptionsDynamoDbTable
+              - StreamArn
+          batchSize: 1
+
+resources:
+  Resources:
+    GraphqlLogGroup:
+      Properties:
+        RetentionInDays: 7
+    HealLogGroup:
+      Properties:
+        RetentionInDays: 7
+    AuthLogGroup:
+      Properties:
+        RetentionInDays: 7
+    RecordLogGroup:
+      Properties:
+        RetentionInDays: 7
+    MessagesDynamoDbTable:
+      Type: AWS::DynamoDB::Table
+      DeletionPolicy: Retain
+      Properties:
+        TableName: ${self:provider.environment.DYNAMODB_TABLE}-messages
+        AttributeDefinitions:
+          - AttributeName: id
+            AttributeType: S
+        KeySchema:
+          - AttributeName: id
+            KeyType: HASH
+        ProvisionedThroughput:
+          ReadCapacityUnits: 1
+          WriteCapacityUnits: 1
+        StreamSpecification:
+          StreamViewType: NEW_AND_OLD_IMAGES
+    UsersDynamoDbTable:
+      Type: AWS::DynamoDB::Table
+      DeletionPolicy: Retain
+      Properties:
+        TableName: ${self:provider.environment.DYNAMODB_TABLE}-users
+        AttributeDefinitions:
+          - AttributeName: id
+            AttributeType: S
+          - AttributeName: emailAddress
+            AttributeType: S
+        KeySchema:
+          - AttributeName: id
+            KeyType: HASH
+        GlobalSecondaryIndexes: 
+          - IndexName: emails-index
+            KeySchema: 
+            - AttributeName: emailAddress
+              KeyType: HASH
+            - AttributeName: id
+              KeyType: RANGE
+            Projection: 
+              ProjectionType: ALL
+            ProvisionedThroughput: 
+              ReadCapacityUnits: 1
+              WriteCapacityUnits: 1      
+        ProvisionedThroughput:
+          ReadCapacityUnits: 1
+          WriteCapacityUnits: 1
+        StreamSpecification:
+          StreamViewType: NEW_AND_OLD_IMAGES
+    ChargesDynamoDbTable:
+      Type: AWS::DynamoDB::Table
+      DeletionPolicy: Retain
+      Properties:
+        TableName: ${self:provider.environment.DYNAMODB_TABLE}-charges
+        AttributeDefinitions:
+          - AttributeName: id
+            AttributeType: S
+          - AttributeName: user
+            AttributeType: S
+        KeySchema:
+          - AttributeName: id
+            KeyType: HASH
+        GlobalSecondaryIndexes: 
+          - IndexName: users-index
+            KeySchema: 
+            - AttributeName: user
+              KeyType: HASH
+            - AttributeName: id
+              KeyType: RANGE
+            Projection: 
+              ProjectionType: ALL
+            ProvisionedThroughput: 
+              ReadCapacityUnits: 1
+              WriteCapacityUnits: 1
+        ProvisionedThroughput:
+          ReadCapacityUnits: 1
+          WriteCapacityUnits: 1
+        StreamSpecification:
+          StreamViewType: NEW_AND_OLD_IMAGES
+    EventsDynamoDbTable:
+      Type: AWS::DynamoDB::Table
+      DeletionPolicy: Retain
+      Properties:
+        TableName: ${self:provider.environment.DYNAMODB_TABLE}-events
+        AttributeDefinitions:
+          - AttributeName: id
+            AttributeType: S
+          - AttributeName: user
+            AttributeType: S
+        KeySchema:
+          - AttributeName: id
+            KeyType: HASH
+        GlobalSecondaryIndexes: 
+          - IndexName: users-index
+            KeySchema: 
+            - AttributeName: user
+              KeyType: HASH
+            - AttributeName: id
+              KeyType: RANGE
+            Projection: 
+              ProjectionType: ALL
+            ProvisionedThroughput: 
+              ReadCapacityUnits: 1
+              WriteCapacityUnits: 1
+        ProvisionedThroughput:
+          ReadCapacityUnits: 1
+          WriteCapacityUnits: 1
+        StreamSpecification:
+          StreamViewType: NEW_AND_OLD_IMAGES
+    OptionsDynamoDbTable:
+      Type: AWS::DynamoDB::Table
+      DeletionPolicy: Retain
+      Properties:
+        TableName: ${self:provider.environment.DYNAMODB_TABLE}-options
+        AttributeDefinitions:
+          - AttributeName: id
+            AttributeType: S
+        KeySchema:
+          - AttributeName: id
+            KeyType: HASH
+        ProvisionedThroughput:
+          ReadCapacityUnits: 1
+          WriteCapacityUnits: 1
+        StreamSpecification:
+          StreamViewType: NEW_AND_OLD_IMAGES
+    AddressesDynamoDbTable:
+      Type: AWS::DynamoDB::Table
+      DeletionPolicy: Retain
+      Properties:
+        TableName: ${self:provider.environment.DYNAMODB_TABLE}-addresses
+        AttributeDefinitions:
+          - AttributeName: id
+            AttributeType: S
+          - AttributeName: user
+            AttributeType: S
+        KeySchema:
+          - AttributeName: id
+            KeyType: HASH
+        GlobalSecondaryIndexes: 
+          - IndexName: users-index
+            KeySchema: 
+            - AttributeName: user
+              KeyType: HASH
+            - AttributeName: id
+              KeyType: RANGE
+            Projection: 
+              ProjectionType: ALL
+            ProvisionedThroughput: 
+              ReadCapacityUnits: 1
+              WriteCapacityUnits: 1
+        ProvisionedThroughput:
+          ReadCapacityUnits: 1
+          WriteCapacityUnits: 1
+        StreamSpecification:
+          StreamViewType: NEW_AND_OLD_IMAGES
+    LettersDynamoDbTable:
+      Type: AWS::DynamoDB::Table
+      DeletionPolicy: Retain
+      Properties:
+        TableName: ${self:provider.environment.DYNAMODB_TABLE}-letters
+        AttributeDefinitions:
+          - AttributeName: id
+            AttributeType: S
+          - AttributeName: user
+            AttributeType: S
+        KeySchema:
+          - AttributeName: id
+            KeyType: HASH
+        GlobalSecondaryIndexes: 
+          - IndexName: users-index
+            KeySchema: 
+            - AttributeName: user
+              KeyType: HASH
+            - AttributeName: id
+              KeyType: RANGE
+            Projection: 
+              ProjectionType: ALL
+            ProvisionedThroughput: 
+              ReadCapacityUnits: 1
+              WriteCapacityUnits: 1
+        ProvisionedThroughput:
+          ReadCapacityUnits: 1
+          WriteCapacityUnits: 1
+        StreamSpecification:
+          StreamViewType: NEW_AND_OLD_IMAGES
+    OrdersDynamoDbTable:
+      Type: AWS::DynamoDB::Table
+      DeletionPolicy: Retain
+      Properties:
+        TableName: ${self:provider.environment.DYNAMODB_TABLE}-orders
+        AttributeDefinitions:
+          - AttributeName: id
+            AttributeType: S
+          - AttributeName: user
+            AttributeType: S
+          - AttributeName: contact
+            AttributeType: S
+          - AttributeName: upload
+            AttributeType: S
+        KeySchema:
+          - AttributeName: id
+            KeyType: HASH
+        GlobalSecondaryIndexes: 
+        - IndexName: users-index
+          KeySchema: 
+          - AttributeName: user
+            KeyType: HASH
+          - AttributeName: id
+            KeyType: RANGE
+          Projection: 
+            ProjectionType: ALL
+          ProvisionedThroughput: 
+            ReadCapacityUnits: 1
+            WriteCapacityUnits: 1
+        - IndexName: contacts-index
+          KeySchema: 
+          - AttributeName: contact
+            KeyType: HASH
+          - AttributeName: id
+            KeyType: RANGE
+          Projection: 
+            ProjectionType: ALL
+          ProvisionedThroughput: 
+            ReadCapacityUnits: 1
+            WriteCapacityUnits: 1
+        - IndexName: uploads-index
+          KeySchema: 
+          - AttributeName: upload
+            KeyType: HASH
+          - AttributeName: id
+            KeyType: RANGE
+          Projection: 
+            ProjectionType: ALL
+          ProvisionedThroughput: 
+            ReadCapacityUnits: 1
+            WriteCapacityUnits: 1
+        ProvisionedThroughput:
+          ReadCapacityUnits: 1
+          WriteCapacityUnits: 1
+        StreamSpecification:
+          StreamViewType: NEW_AND_OLD_IMAGES
+    UploadsDynamoDbTable:
+      Type: AWS::DynamoDB::Table
+      DeletionPolicy: Retain
+      Properties:
+        TableName: ${self:provider.environment.DYNAMODB_TABLE}-uploads
+        AttributeDefinitions:
+          - AttributeName: id
+            AttributeType: S
+          - AttributeName: user
+            AttributeType: S
+        KeySchema:
+          - AttributeName: id
+            KeyType: HASH
+        GlobalSecondaryIndexes: 
+          - IndexName: users-index
+            KeySchema: 
+            - AttributeName: user
+              KeyType: HASH
+            - AttributeName: id
+              KeyType: RANGE
+            Projection: 
+              ProjectionType: ALL
+            ProvisionedThroughput: 
+              ReadCapacityUnits: 1
+              WriteCapacityUnits: 1
+        ProvisionedThroughput:
+          ReadCapacityUnits: 1
+          WriteCapacityUnits: 1
+        StreamSpecification:
+          StreamViewType: NEW_AND_OLD_IMAGES
+    ContactsDynamoDbTable:
+      Type: AWS::DynamoDB::Table
+      DeletionPolicy: Retain
+      Properties:
+        TableName: ${self:provider.environment.DYNAMODB_TABLE}-contacts
+        AttributeDefinitions:
+          - AttributeName: id
+            AttributeType: S
+          - AttributeName: user
+            AttributeType: S
+        KeySchema:
+          - AttributeName: id
+            KeyType: HASH
+        GlobalSecondaryIndexes: 
+          - IndexName: users-index
+            KeySchema: 
+            - AttributeName: user
+              KeyType: HASH
+            - AttributeName: id
+              KeyType: RANGE
+            Projection: 
+              ProjectionType: ALL
+            ProvisionedThroughput: 
+              ReadCapacityUnits: 1
+              WriteCapacityUnits: 1
+        ProvisionedThroughput:
+          ReadCapacityUnits: 1
+          WriteCapacityUnits: 1
+        StreamSpecification:
+          StreamViewType: NEW_AND_OLD_IMAGES
+    CardsDynamoDbTable:
+      Type: AWS::DynamoDB::Table
+      DeletionPolicy: Retain
+      Properties:
+        TableName: ${self:provider.environment.DYNAMODB_TABLE}-cards
+        AttributeDefinitions:
+          - AttributeName: id
+            AttributeType: S
+          - AttributeName: user
+            AttributeType: S
+        KeySchema:
+          - AttributeName: id
+            KeyType: HASH
+        GlobalSecondaryIndexes: 
+          - IndexName: users-index
+            KeySchema: 
+            - AttributeName: user
+              KeyType: HASH
+            - AttributeName: id
+              KeyType: RANGE
+            Projection: 
+              ProjectionType: ALL
+            ProvisionedThroughput: 
+              ReadCapacityUnits: 1
+              WriteCapacityUnits: 1
+        ProvisionedThroughput:
+          ReadCapacityUnits: 1
+          WriteCapacityUnits: 1
+        StreamSpecification:
+          StreamViewType: NEW_AND_OLD_IMAGES

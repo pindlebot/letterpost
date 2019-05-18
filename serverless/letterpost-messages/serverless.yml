@@ -1,0 +1,40 @@
+service: letterpost-messages
+
+custom:
+  deploymentBucket: 'global-deployment-bucket'
+  bucket: 'letterpost-messages'
+
+provider:
+  stage: dev
+  name: aws
+  runtime: nodejs8.10
+  region: us-east-1
+  deploymentBucket:
+    name: ${self:custom.deploymentBucket}
+  environment:
+    AWS_IOT_HOST: 'adx5fx5ykfiey-ats.iot.us-east-1.amazonaws.com'
+    DYNAMODB_PREFIX: 'letterpost-api-prod'
+    AWS_BUCKET: ${self:custom.bucket}
+  iamRoleStatements:
+    - Effect: "Allow"
+      Action:
+        - iot:*
+      Resource: "*"
+    - Effect: "Allow"
+      Action:
+        - sns:*
+      Resource: "*"
+    - Effect: "Allow"
+      Action:
+        - s3:*
+      Resource: "*"
+    - Effect: "Allow"
+      Action:
+        - dynamodb:*
+      Resource: "*"
+
+functions:
+  handler:
+    handler: handler.handler
+    events:
+      - sns: letterpost-messages

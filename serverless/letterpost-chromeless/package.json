@@ -1,0 +1,13 @@
+{
+  "name": "letterpost-chromeless",
+  "version": "0.0.1",
+  "main": "index.js",
+  "license": "MIT",
+  "dependencies": {
+    "@serverless-chrome/lambda": "^1.0.0-53",
+    "chrome-remote-interface": "^0.26.1"
+  },
+  "devDependencies": {
+    "aws-sdk": "^2.286.2"
+  }
+}

@@ -1,0 +1,382 @@
+
+enum Role {
+  USER
+  SESSION
+}
+
+enum AddressKind {
+  SENDER
+  RECIPIENT
+}
+
+enum UploadStatus {
+  LOADING
+  DONE
+  ERROR
+}
+
+enum ExtraService {
+  CERTIFIED
+  REGISTERED
+  NONE
+}
+
+enum MailType {
+  USPS_FIRST_CLASS
+  USPS_STANDARD
+}
+
+scalar JSON
+
+scalar Any
+
+directive @auth on OBJECT 
+
+directive @default(value: Any) on FIELD_DEFINITION
+
+interface Node {
+  id: ID!
+}
+
+input UpdateOrderInput {
+  id: ID!
+  contact: ID
+  upload: ID
+}
+
+input UpdateUploadInput {
+  id: ID!
+  orders: [ID!]
+  status: [String!]
+  pages: Int
+}
+
+input PriceInput {
+  pages: Int!
+  id: ID
+  doubleSided: Boolean
+  color: Boolean
+  perforatedPage: Int
+  returnEnvelope: Boolean
+  extraService: ExtraService
+  mailType: MailType
+}
+
+input UpdateContactInput {
+  id: ID!
+  city: String
+  country: String
+  name: String
+  postalCode: String
+  state: String
+  street: String
+  apt: String
+}
+
+
+input UpdateAddressInput {
+  id: ID!
+  contact: ID
+  city: String
+  country: String
+  name: String
+  postalCode: String
+  state: String
+  street: String
+  apt: String
+  kind: AddressKind
+}
+
+input CreateCardInput {
+  stripeSourceId: String
+  stripeTokenId: String
+  stripeCustomerId: String
+  stripeEmail: String
+  user: ID
+  brand: String
+  cvcCheck: String
+  last4: String
+  expMonth: Int
+  expYear: Int
+  country: String
+}
+
+input UpdateCardInput {
+  id: ID!
+  stripeCustomerId: String
+  stripeSourceId: String
+  brand: String
+  cvcCheck: String
+  last4: String
+  name: String
+}
+
+input UpdateUserInput {
+  id: ID!
+  emailAddress: String
+  primaryCard: ID
+  subscribed: Boolean
+}
+
+input UpdateOptionsInput {
+  id: ID!
+  doubleSided: Boolean
+  color: Boolean
+  perforatedPage: Int
+  returnEnvelope: Boolean
+  extraService: ExtraService
+  mailType: MailType
+}
+
+input SendMessageInput {
+  toAddresses: [String]
+  fromAddress: String
+  subject: String
+  html: String
+  text: String
+}
+
+type Mutation {
+  deleteMessage(id: ID!): Message
+  sendMessage (
+    input: SendMessageInput!
+  ): JSON
+  updatePrimaryCard(
+    primaryCard: ID!
+  ): User
+  signinUser(
+    emailAddress: String!
+    password: String!
+  ): User
+  createEvent(
+    user: ID
+    letter: ID
+    eventData: String
+  ): Event
+  updateEvent(
+    id: ID!
+    letter: ID
+    eventData: String
+  ): Event
+  updateAddress(input: UpdateAddressInput!): Address
+  updateOptions(input: UpdateOptionsInput!): Options
+  createLetter(orderId: ID!): Letter
+  createCharge(orderId: ID!): Charge
+  createCard(input: CreateCardInput!): Card
+  createContact: Contact
+  createUser(
+    emailAddress: String!
+    password: String!
+  ): User
+  createUpload(
+    orderId: ID!
+    name: String!
+    size: Int
+    type: String
+  ): Upload
+  emailInUse(emailAddress: String!): Boolean
+  resetPassword(emailAddress: String!): Boolean
+  updatePassword(password: String!): User
+  deleteCard(id: ID!): Card
+  deleteContact(id: ID!): Contact
+  deleteOrder(id: ID!): Order
+  deleteUpload(id: ID!): Upload
+  deleteUser(id: ID!): User
+  updateCard(input: UpdateCardInput!): Card
+  updateOrder(input: UpdateOrderInput!): Order
+  updateContact(input: UpdateContactInput!): Contact
+  updateUpload(input: UpdateUploadInput!): Upload
+  updateUser(input: UpdateUserInput!): User
+  createPresignedPost(
+    key: String!
+  ): JSON
+}
+
+type Query {
+  calculateFee(input: PriceInput!): Int
+  orders: [Order]
+  order(id: ID!): Order
+  event(id: ID!): Event
+  events: [Event]
+  options(id: ID!): Options
+  letters: [Letter]
+  letter(id: ID!): Letter
+  addresses: [Address]
+  address(id: ID!): Address
+  contacts: [Contact]
+  contact(id: ID!): Contact
+  cards: [Card]
+  card(id: ID!): Card
+  charge(id: ID!): Charge
+  charges: [Charge]
+  uploads: [Upload]
+  upload(id: ID!): Upload
+  users: [User]
+  user: User
+  currentOrder(id: ID): Order
+  message(id: ID!): Message
+  messages: [Message]
+}
+
+type Contact implements Node {
+  id: ID!
+  createdAt: String!
+  updatedAt: String!
+  orders: [Order]
+  user: User
+  address: Address
+}
+
+type Options implements Node {
+  id: ID!
+  order: Order
+  doubleSided: Boolean @default(value: false)
+  color: Boolean @default(value: true)
+  perforatedPage: Int
+  returnEnvelope: Boolean @default(value: false)
+  extraService: ExtraService @default(value: "NONE")
+  mailType: MailType @default(value: "USPS_STANDARD")
+}
+
+type Order @auth {
+  id: ID!
+  user: User!
+  createdAt: String!
+  updatedAt: String!
+  contact: Contact
+  upload: Upload
+  charge: Charge
+  letter: Letter
+  options: Options
+  paid: Boolean @default(value: false)
+}
+
+type Charge implements Node {
+  id: ID!
+  user: User!
+  createdAt: String!
+  updatedAt: String!
+  order: Order
+  card: Card
+  amount: Int
+  stripeCustomerId: String
+  status: String
+}
+
+type Card implements Node {
+  id: ID!
+  user: User!
+  createdAt: String!
+  updatedAt: String!
+  stripeSourceId: String
+  stripeTokenId: String
+  stripeCustomerId: String
+  stripeEmail: String
+  charges: [Charge]
+  brand: String
+  cvcCheck: String
+  last4: String
+  expMonth: Int
+  expYear: Int
+  country: String
+}
+
+type Upload implements Node {
+  id: ID!
+  user: User!
+  createdAt: String!
+  updatedAt: String!
+  orders: [Order]
+  name: String
+  key: String
+  size: Int
+  file: String
+  pages: Int
+  status: UploadStatus @default(value: "LOADING")
+  thumbnail: String
+  type: String
+}
+
+type User @auth {
+  id: ID!
+  createdAt: String!
+  updatedAt: String!
+  token: String
+  sub: String
+  uploads: [Upload]
+  orders: [Order]
+  cards: [Card]
+  events: [Event]
+  primaryCard: Card
+  charges: [Charge]
+  contacts: [Contact]
+  letters: [Letter]
+  addresses: [Address]
+  emailAddress: String
+  password: String
+  returnAddress: Address
+  currentOrder: Order
+  subscribed: Boolean @default(value: true)
+  role: Role @default(value: "SESSION")
+}
+
+type Letter implements Node {
+  id: ID!
+  createdAt: String!
+  updatedAt: String!
+  user: User!
+  order: Order
+  events: [Event]
+  expectedDeliveryDate: String
+  trackingNumber: String
+  carrier: String
+  mailType: String
+  status: String
+  sendDate: String
+}
+
+type Address implements Node {
+  id: ID!
+  user: User!
+  contact: Contact
+  createdAt: String!
+  updatedAt: String!
+  city: String
+  country: String @default(value: "US")
+  name: String
+  postalCode: String
+  state: String
+  street: String
+  apt: String
+  kind: AddressKind @default(value: "RECIPIENT")
+}
+
+type Event implements Node {
+  id: ID!
+  createdAt: String!
+  updatedAt: String!
+  user: User 
+  letter: Letter
+  eventType: String
+  location: String
+  name: String
+  time: String
+}
+
+type Message implements Node {
+  id: ID!
+  date: String
+  # attachments: []
+  from: JSON
+  headers: JSON
+  html: String
+  mail: JSON
+  messageId: String
+  notificationType: String
+  receipt: JSON
+  replyTo: JSON
+  subject: String
+  text: String
+  textAsHtml: String
+  to: JSON
+}

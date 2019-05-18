@@ -1,0 +1,47 @@
+service: letterpost-session
+
+plugins:
+  - serverless-domain-manager
+
+custom:
+  deploymentBucket: 'global-deployment-bucket'
+  customDomain:
+    domainName: api.letterpost.co
+    stage: ${self:provider.stage}
+    certificateName: 'letterpost.co'
+    createRoute53Record: true
+    basePath: 'session'
+
+provider:
+  name: aws
+  runtime: nodejs8.10
+  region: us-east-1
+  deploymentBucket:
+    name: ${self:custom.deploymentBucket}
+  environment:
+    CLIENT_SESSION_ID: ${ssm:/printawesome-api/CLIENT_SESSION_ID}
+    CLIENT_SESSION_SECRET: ${ssm:/printawesome-api/CLIENT_SESSION_SECRET~true}
+    CLIENT_AUTH_ID: ${ssm:/printawesome-api/CLIENT_AUTH_ID}
+    DYNAMODB_PREFIX: 'letterpost-graphql-prod'
+
+  iamRoleStatements:
+    - Effect: Allow
+      Action:
+        - dynamodb:*
+      Resource: "*"
+
+functions:
+  handle: 
+    handler: handler.handler
+    events: 
+      - http:
+          path: token
+          method: post
+          integration: lambda-proxy
+          cors: true
+
+resources:
+  Resources:
+    HandleLogGroup:
+      Properties:
+        RetentionInDays: 7

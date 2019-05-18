@@ -1,0 +1,10 @@
+{
+  "name": "letterpost-messages",
+  "version": "0.0.1",
+  "main": "handler.js",
+  "license": "MIT",
+  "dependencies": {
+    "dynamodb-tools": "^0.0.68",
+    "mailparser": "^2.3.4"
+  }
+}

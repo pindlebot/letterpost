@@ -1,0 +1,42 @@
+service: letterpost-chromeless
+
+custom:
+  stage: prod
+  debug: "*"
+  deploymentBucket: 'global-deployment-bucket'
+
+provider:
+  name: aws
+  runtime: nodejs8.10
+  stage: ${self:custom.stage}
+  region: us-east-1
+  deploymentBucket:
+    name: ${self:custom.deploymentBucket}
+  iamRoleStatements:
+    - Effect: "Allow"
+      Resource: "*"
+      Action:
+        - "sns:*"
+    - Effect: "Allow"
+      Resource: "*"
+      Action:
+        - "s3:*"
+
+functions:
+  handler:
+    memorySize: 1536
+    timeout: 180
+    handler: handler.handler
+    events:
+      - sns: letterpost-process-html
+    environment:
+      CHROMELESS_S3_BUCKET_NAME: 'letterpost'
+      CHROMELESS_S3_OBJECT_KEY_PREFIX: 'letterpost/'
+      CHROMELESS_S3_OBJECT_ACL: 'public-read'
+      CHROMELESS_S3_BUCKET_URL: 's3.amazonaws.com/letterpost'
+
+resources:
+  Resources:
+    HandlerLogGroup:
+      Properties:
+        RetentionInDays: 7

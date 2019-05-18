@@ -1,0 +1,45 @@
+service: letterpost-webhook
+
+plugins:
+  - serverless-domain-manager
+
+custom:
+  prefix: letterpost-graphql-prod
+  deploymentBucket: 'global-deployment-bucket'
+  customDomain:
+    domainName: webhook.letterpost.co
+    stage: ${self:provider.stage}
+    certificateName: 'letterpost.co'
+    createRoute53Record: true
+
+provider:
+  name: aws
+  runtime: nodejs8.10
+  region: us-east-1
+  deploymentBucket: 
+    name: ${self:custom.deploymentBucket}
+  environment: 
+    DYNAMODB_TABLE: ${self:custom.prefix}
+    DEBUG: 'true'
+
+  iamRoleStatements:
+    - Effect: Allow
+      Action:
+        - dynamodb:*
+      Resource: arn:aws:dynamodb:us-east-1:*:*
+
+functions:
+  handler: 
+    handler: handler.handler
+    events: 
+      - http:
+          path: /
+          method: post
+          integration: lambda-proxy
+          cors: true
+
+resources:
+  Resources:
+    HandlerLogGroup:
+      Properties:
+        RetentionInDays: 7

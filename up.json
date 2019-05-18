@@ -1,0 +1,31 @@
+{
+  "name": "letterpost-app",
+  "type": "static",
+  "regions": ["us-east-1"],
+  "static": {
+    "dir": "dist"
+  },
+  "stages": {
+    "production": {
+      "domain": "letterpost.co"
+    }
+  },
+  "headers": {
+    "/*.js": {
+      "cache-control": "immutable,max-age=31536000",
+      "strict-transport-security": "max-age=31536000",
+      "content-type": "text/javascript; charset=utf-8"
+    },
+    "/*.css": {
+      "cache-control": "immutable,max-age=31536000",
+      "strict-transport-security": "max-age=31536000",
+      "content-type": "text/css; charset=utf-8"
+    }
+  },
+  "redirects": {
+    "/*": {
+      "location": "/",
+      "status": 200
+    }
+  }
+}

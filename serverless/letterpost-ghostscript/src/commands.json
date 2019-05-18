@@ -1,0 +1,7 @@
+{
+  "count":"gs -q -dNODISPLAY -c \"(${source}) (r) file runpdfbegin pdfpagecount = quit\"",
+  "dimensions": "gs -dNODISPLAY -q -sFile=${source} -dDumpMediaSizes /var/task/pdf_info.ps",
+  "thumbnail": "gs -dFirstPage=1 -dLastPage=1 -r300x300 -sCompression=none -sDEVICE=jpeg -o ${dest} ${source}",
+  "resize": "gs -sDEVICE=pdfwrite -sPAPERSIZE=letter -dFIXEDMEDIA -dPDFFitPage -dCompatibilityLevel=1.4 -o ${dest} ${source}",
+  "comply": "gs -sDEVICE=pdfwrite -dPDFA -dBATCH -dNOPAUSE -sProcessColorModel=DeviceRGB -sPDFACompatibilityPolicy=1 -sOutputFile=${dest} ${source}"
+}

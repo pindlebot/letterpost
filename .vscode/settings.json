@@ -1,0 +1,19 @@
+{
+  "standard.enable": true,
+  "javascript.validate.enable": false,
+  "standard.options": {
+    "ignore": [
+      "node_modules/**"
+    ],
+    "parser": "babel-eslint"
+  },
+  "standard.validate": [
+    "javascript",
+    "javascriptreact"
+  ],
+  "standard.trace.server": "verbose",
+  "standard.workingDirectories": [
+    "app"
+  ],
+  "editor.tabSize": 2
+}

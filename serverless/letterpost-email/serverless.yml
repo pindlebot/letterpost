@@ -1,0 +1,38 @@
+service: letterpost-email
+plugins:
+  - serverless-pseudo-parameters
+
+custom:
+  deploymentBucket: 'global-deployment-bucket'
+  email: 'no-reply@letterpost.co'
+  region: 'us-east-1'
+  website: 'https://letterpost.co'
+  address: '8705 COLESVILLE RD STE B #325, Silver Spring, MD 20910'
+
+provider:
+  name: aws
+  runtime: nodejs8.10
+  deploymentBucket:
+    name: ${self:custom.deploymentBucket}
+  environment:
+    MAILING_ADDRESS: ${self:custom.address}
+    WEBSITE: ${self:custom.website}
+    SOURCE_EMAIL: ${self:custom.email}
+    SOURCE_EMAIL_ARN: 'arn:aws:ses:#{AWS::Region}:#{AWS::AccountId}:identity/${self:custom.email}'
+  iamRoleStatements:
+    - Effect: Allow
+      Action:
+        - ses:*
+      Resource: "*"
+
+functions:
+  handler:
+    handler: handler.handler
+    events:
+      - sns: letterpost-email
+
+resources:
+  Resources:
+    HandlerLogGroup:
+      Properties:
+        RetentionInDays: 7

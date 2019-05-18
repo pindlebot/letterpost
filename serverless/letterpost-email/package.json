@@ -1,0 +1,15 @@
+{
+  "name": "letterpost-email",
+  "version": "1.0.0",
+  "description": "",
+  "main": "handler.js",
+  "scripts": {},
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "serverless-pseudo-parameters": "^2.2.0"
+  },
+  "devDependencies": {
+    "aws-sdk": "^2.307.0"
+  }
+}

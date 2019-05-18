@@ -1,0 +1,26 @@
+{
+  "name": "letterpost-pdf",
+  "scripts": {
+    "postinstall": "rm -rf node_modules/canvas/build && git clone https://github.com/unshift/canvas-lambda.git node_modules/canvas/build"
+  },
+  "dependencies": {
+    "aws-presign": "^0.0.2",
+    "canvas": "2.0.0-alpha.12",
+    "dynamodb-tools": "^0.0.70",
+    "marked": "^0.4.0",
+    "mime-types": "^2.1.19",
+    "node-fetch": "^2.2.0",
+    "pdftk-lambda": "^0.0.4",
+    "query-string": "^6.1.0",
+    "scissors": "^0.2.3"
+  },
+  "standard": {
+    "include": "src/*.js"
+  },
+  "devDependencies": {
+    "aws-sdk": "^2.279.1",
+    "serverless-domain-manager": "^2.6.5",
+    "serverless-pseudo-parameters": "^2.2.0",
+    "standard": "^11.0.1"
+  }
+}
