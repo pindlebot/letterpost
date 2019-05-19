@@ -6,15 +6,17 @@ import { ApolloProvider, withApollo, compose } from 'react-apollo'
 import { MuiThemeProvider } from '@material-ui/core/styles'
 import { Route, Switch } from 'react-router-dom'
 import { Provider, ReactReduxContext, connect } from 'react-redux'
+import { CSSTransition } from 'react-transition-group'
+
 import pages, { LoadingOverlay } from './pages'
-import './styles/main.scss'
 import createClient from './lib/apolloClient'
 import { store, history, setLoadingState } from './lib/redux'
 import theme from './theme'
 import ValidationErrorsSnackbar from './components/ValidationErrorsSnackbar'
 import GraphQLErrorsSnackbar from './components/GraphQLErrorsSnackbar'
 import getToken from './lib/getToken'
-import { CSSTransition } from 'react-transition-group'
+
+import './styles/main.scss'
 
 class App extends React.Component {
   state = {

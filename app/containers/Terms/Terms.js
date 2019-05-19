@@ -1,5 +1,5 @@
 import React from 'react'
-import Layout from '../../components/Layout'
+import Layout from 'Layout'
 import terms from '../../static/terms.md'
 import 'isomorphic-fetch'
 import marked from 'marked'

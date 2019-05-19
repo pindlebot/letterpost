@@ -1,16 +1,108 @@
 {
   "presets": [
-    ["@babel/preset-env", {
-      "targets": "> 0.25%, not dead"
-    }],
+    [
+      "@babel/preset-env",
+      {
+        "targets": "> 0.25%, not dead"
+      }
+    ],
     "@babel/preset-react",
     "@babel/preset-flow"
   ],
   "plugins": [
-    ["@babel/plugin-transform-flow-strip-types", {}, "strip-types"],
-    ["@babel/plugin-transform-runtime", {}, "transform-runtime"],
-    ["@babel/plugin-proposal-object-rest-spread", {}, "rest-spread"],
-    ["@babel/plugin-proposal-class-properties", {}, "class-properties"],
-    ["@babel/plugin-proposal-optional-chaining", {}, "optional-chaining"]
+    [
+      "@babel/plugin-transform-flow-strip-types",
+      {},
+      "strip-types"
+    ],
+    [
+      "@babel/plugin-transform-runtime",
+      {},
+      "transform-runtime"
+    ],
+    [
+      "@babel/plugin-proposal-object-rest-spread",
+      {},
+      "rest-spread"
+    ],
+    [
+      "@babel/plugin-proposal-class-properties",
+      {},
+      "class-properties"
+    ],
+    [
+      "@babel/plugin-proposal-optional-chaining",
+      {},
+      "optional-chaining"
+    ],
+    [
+      "module-resolver",
+      {
+        "root": [
+          "."
+        ],
+        "alias": {
+          "AddressKindToggle": "./app/components/AddressKindToggle/index.js",
+          "AppSnackbar": "./app/components/AppSnackbar/index.js",
+          "CloudIcon": "./app/components/CloudIcon/index.js",
+          "ContactList": "./app/components/ContactList/index.js",
+          "ContactListItem": "./app/components/ContactListItem/index.js",
+          "DeleteAccountConfirmationDialog": "./app/components/DeleteAccountConfirmationDialog/index.js",
+          "DocumentIcon": "./app/components/DocumentIcon/index.js",
+          "EditEmailTextField": "./app/components/EditEmailTextField/index.js",
+          "EditPasswordTextField": "./app/components/EditPasswordTextField/index.js",
+          "Envelope": "./app/components/Envelope/index.js",
+          "EnvelopeSvg": "./app/components/EnvelopeSvg/index.js",
+          "ErrorMessage": "./app/components/ErrorMessage/index.js",
+          "FancyButton": "./app/components/FancyButton/index.js",
+          "Footer": "./app/components/Footer/index.js",
+          "GraphQLErrorsSnackbar": "./app/components/GraphQLErrorsSnackbar/index.js",
+          "Hero": "./app/components/Hero/index.js",
+          "Layout": "./app/components/Layout/index.js",
+          "LayoutHeader": "./app/components/LayoutHeader/index.js",
+          "LayoutHeaderMenu": "./app/components/LayoutHeaderMenu/index.js",
+          "LetterPreview": "./app/components/LetterPreview/index.js",
+          "OrderCard": "./app/components/OrderCard/index.js",
+          "OrderDetailsExtraService": "./app/components/OrderDetailsExtraService/index.js",
+          "OrderDetailsOptions": "./app/components/OrderDetailsOptions/index.js",
+          "OrderDetailsToggle": "./app/components/OrderDetailsToggle/index.js",
+          "OrderDialogs": "./app/components/OrderDialogs/index.js",
+          "OrderGrid": "./app/components/OrderGrid/index.js",
+          "OrderStepHeading": "./app/components/OrderStepHeading/index.js",
+          "OrdersTable": "./app/components/OrdersTable/index.js",
+          "OrdersTableRow": "./app/components/OrdersTableRow/index.js",
+          "OrdersTableToolbar": "./app/components/OrdersTableToolbar/index.js",
+          "PaperPlaneSvg": "./app/components/PaperPlaneSvg/index.js",
+          "PasswordField": "./app/components/PasswordField/index.js",
+          "PaymentMethods": "./app/components/PaymentMethods/index.js",
+          "PaymentMethodsIconButton": "./app/components/PaymentMethodsIconButton/index.js",
+          "PdfEmbed": "./app/components/PdfEmbed/index.js",
+          "PdfEmbedDialog": "./app/components/PdfEmbedDialog/index.js",
+          "PrimaryButton": "./app/components/PrimaryButton/index.js",
+          "ProfileAvatar": "./app/components/ProfileAvatar/index.js",
+          "ProgressBar": "./app/components/ProgressBar/index.js",
+          "Quote": "./app/components/Quote/index.js",
+          "QuotePreview": "./app/components/QuotePreview/index.js",
+          "RecipientForm": "./app/components/RecipientForm/index.js",
+          "RecipientFormDialog": "./app/components/RecipientFormDialog/index.js",
+          "SelectUpload": "./app/components/SelectUpload/index.js",
+          "SelectUploadMenu": "./app/components/SelectUploadMenu/index.js",
+          "SignInEmailTextField": "./app/components/SignInEmailTextField/index.js",
+          "Spinner": "./app/components/Spinner/index.js",
+          "StampSvg": "./app/components/StampSvg/index.js",
+          "StripeCheckout": "./app/components/StripeCheckout/index.js",
+          "StripeCheckoutButton": "./app/components/StripeCheckoutButton/index.js",
+          "StripeCheckoutDialog": "./app/components/StripeCheckoutDialog/index.js",
+          "SubmitOrderButton": "./app/components/SubmitOrderButton/index.js",
+          "SupportedUploadFormats": "./app/components/SupportedUploadFormats/index.js",
+          "UploadDropzone": "./app/components/UploadDropzone/index.js",
+          "UploadDropzoneDialog": "./app/components/UploadDropzoneDialog/index.js",
+          "UploadDropzoneDialogContent": "./app/components/UploadDropzoneDialogContent/index.js",
+          "UploadList": "./app/components/UploadList/index.js",
+          "UploadListStatusButton": "./app/components/UploadListStatusButton/index.js",
+          "ValidationErrorsSnackbar": "./app/components/ValidationErrorsSnackbar/index.js"
+        }
+      }
+    ]
   ]
 }

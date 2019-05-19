@@ -1,7 +1,7 @@
 import React from 'react'
 import PropTypes from 'prop-types'
 import { withApollo, compose, Mutation, Query } from 'react-apollo'
-import Layout from '../../components/Layout'
+import Layout from 'Layout'
 import { withRouter } from 'react-router-dom'
 import gql from 'graphql-tag'
 import { withStyles } from '@material-ui/core/styles'

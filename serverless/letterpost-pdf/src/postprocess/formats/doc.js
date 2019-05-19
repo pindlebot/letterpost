@@ -1,18 +1,21 @@
 const fetch = require('node-fetch')
 const { sign } = require('../util')
+const AWS = require('aws-sdk')
 const {
-  WORD_CONVERT_ENDPOINT
+  WORD_CONVERT_ENDPOINT,
+  DOCX_TOPIC_ARN,
+  AWS_REGION
 } = process.env
 
-module.exports = ({ key, sub, id, name }) => {
-  console.log('postprocess-doc', key)
-  const endpoint = `${WORD_CONVERT_ENDPOINT}${encodeURIComponent(`${id}/${name}.pdf`)}`
+module.exports = async ({ key, sub, id, name }) => {
+  const sns = new AWS.SNS({ region: AWS_REGION })
   const url = sign({ key })
-  return fetch(endpoint, {
-    method: 'POST',
-    headers: {
-      'Content-type': 'application/json'
-    },
-    body: JSON.stringify({ url, tags: { sub } })
-  }).then(resp => resp.json())
+  return sns.publish({
+    TopicArn: DOCX_TOPIC_ARN,
+    Message: JSON.stringify({
+      key: `${id}/${name}.pdf`,
+      url: url,
+      tags: { sub }
+    })
+  }).promise()
 }

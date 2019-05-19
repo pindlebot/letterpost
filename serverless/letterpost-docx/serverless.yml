@@ -1,0 +1,45 @@
+service: letterpost-docx
+# plugins:
+#   - serverless-pseudo-parameters
+
+custom:
+  deploymentBucket: 'global-deployment-bucket'
+  region: 'us-east-1'
+
+provider:
+  name: aws
+  runtime: nodejs8.10
+  deploymentBucket:
+    name: ${self:custom.deploymentBucket}
+  environment:
+    AWS_BUCKET: letterpost
+  iamRoleStatements:
+    - Effect: Allow
+      Action:
+        - s3:*
+      Resource: "*"
+    - Effect: "Allow"
+      Resource: "*"
+      Action:
+        - "sns:*"
+
+# package:
+#   exclude:
+#     - libre-office-layer/**
+
+functions:
+  handler:
+    timeout: 300
+    handler: src/handler.handler
+    events:
+      - sns: letterpost-docx
+
+# layers:
+#   libre-office:
+#     path: libre-office-layer
+
+resources:
+  Resources:
+    HandlerLogGroup:
+      Properties:
+        RetentionInDays: 7

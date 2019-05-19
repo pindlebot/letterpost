@@ -4,7 +4,6 @@ import Spinner from './components/Spinner'
 const styles = {
   width: '100%',
   minHeight: '100vh',
-  // backgroundColor: 'transparent',
   position: 'absolute',
   padding: '40vh',
   boxSizing: 'border-box',
@@ -33,7 +32,6 @@ export const PrivacyPolicy = React.lazy(() => import('./containers/PrivacyPolicy
 export const CookiePolicy = React.lazy(() => import('./containers/CookiePolicy'))
 export const Disclaimer = React.lazy(() => import('./containers/Disclaimer'))
 export const Unsubscribe = React.lazy(() => import('./containers/Unsubscribe'))
-export const Dashboard = React.lazy(() => import('./containers/Dashboard'))
 
 export default [{
   component: Home,
@@ -78,10 +76,6 @@ export default [{
   component: Unsubscribe,
   path: '/unsubscribe',
   key: 'unsubscribe'
-}, {
-  component: Dashboard,
-  path: '/dashboard/:id?',
-  key: 'dashboard'
 }, {
   component: props => <p>404</p>,
   key: 'not-found'
