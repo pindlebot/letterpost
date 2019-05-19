@@ -2,10 +2,6 @@ import React from 'react'
 import PropTypes from 'prop-types'
 import { withApollo, compose, Mutation, Query } from 'react-apollo'
 import { withStyles } from '@material-ui/core/styles'
-import List from '@material-ui/core/List'
-import ListItem from '@material-ui/core/ListItem'
-import ListItemText from '@material-ui/core/ListItemText'
-import Button from '@material-ui/core/Button'
 import Layout from 'Layout'
 import {
   UPDATE_ORDER,
@@ -15,24 +11,9 @@ import {
 } from '../../graphql/mutations'
 import 'isomorphic-fetch'
 import { withRouter } from 'react-router-dom'
-import ListItemIcon from '@material-ui/core/ListItemIcon'
-import PersonIcon from '@material-ui/icons/Person'
 import styles from './styles'
-import LinearProgress from '@material-ui/core/LinearProgress'
-import OrderDetailsOptions from 'OrderDetailsOptions'
-import PaymentMethods from 'PaymentMethods'
-import AttachmentIcon from '@material-ui/icons/Attachment'
 import { ORDER_QUERY, USER_QUERY } from '../../graphql/queries'
-import OrderCard from 'OrderCard'
-import Quote from 'Quote'
 import OrderDialogs from 'OrderDialogs'
-import OrderStepHeading from 'OrderStepHeading'
-import Grid from '@material-ui/core/Grid'
-import Checkbox from '@material-ui/core/Checkbox'
-import FormControlLabel from '@material-ui/core/FormControlLabel'
-import FormControl from '@material-ui/core/FormControl'
-import classnames from 'classnames'
-import FormHelperText from '@material-ui/core/FormHelperText'
 import EditEmailTextField from 'EditEmailTextField'
 import { OrderPropType, UserPropType } from '../../lib/propTypes'
 import OrderGrid from 'OrderGrid'
@@ -216,6 +197,7 @@ class Order extends React.Component {
               this.setState({ open, error: {} })
             }}
             preSubmit={this.preSubmit}
+            error={this.state.error}
             accept={this.state.accept}
             onCheckboxChange={evt => {
               this.setState(prevState => ({

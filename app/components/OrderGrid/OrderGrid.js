@@ -20,7 +20,12 @@ import EditEmailTextField from 'EditEmailTextField'
 import { Mutation } from 'react-apollo'
 import Quote from 'Quote'
 import OrderDetailsOptions from 'OrderDetailsOptions'
-
+import {
+  UPDATE_ORDER,
+  CREATE_LETTER,
+  CREATE_CHARGE,
+  UPDATE_USER
+} from '../../graphql/mutations'
 class GridItem extends React.Component {
   render () {
     const {
@@ -211,7 +216,7 @@ class OrderGrid extends React.Component {
                 control={
                   <Checkbox
                     checked={this.props.accept}
-                    onCheckboxChange={this.props.onCheckboxChange}
+                    onChange={this.props.onCheckboxChange}
                   />
                 }
                 label={<FormHelperText className={classes.formHelperText}><span>I accept the <a href='/terms'>terms and conditions</a></span></FormHelperText>}

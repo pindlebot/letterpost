@@ -13,7 +13,7 @@ import OrderDetailsToggle from '../OrderDetailsToggle'
 import InvertColors from '@material-ui/icons/InvertColors'
 import Print from '@material-ui/icons/Print'
 import { Mutation } from 'react-apollo'
-import { UPDATE_OPTIONS } from '../../graphql/mutations'
+import { UPDATE_OPTIONS, ORDER_QUERY } from '../../graphql/mutations'
 import MailIcon from '@material-ui/icons/Mail'
 import OrderDetailsExtraService from '../OrderDetailsExtraService'
 import classnames from 'classnames'
@@ -35,7 +35,32 @@ class OrderDetailsOptions extends React.Component {
     }
   }
 
-  updateOptions = (mutate) => variables => mutate({ variables })
+  updateOptions = (mutate) => variables => mutate({
+    variables,
+    optimisticResponse: {
+      __typename: 'Mutation',
+      updateOptions: {
+        ...this.props.order.data.currentOrder.options,
+        ...variables.input,
+        __typename: 'Options'
+      }
+    },
+    update: (store, { data: { updateOptions } }) => {
+      const { currentOrder } = store.readQuery({ query: ORDER_QUERY })
+      store.writeQuery({
+        query: ORDER_QUERY,
+        data: {
+          currentOrder: {
+            ...currentOrder,
+            options: {
+              ...currentOrder.options,
+              ...updateOptions
+            }
+          }
+        }
+      })
+    }
+  })
 
   handleAlignment = (mutate) => (evt, alignment) => mutate({
     variables: {
