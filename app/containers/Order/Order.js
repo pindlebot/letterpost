@@ -16,6 +16,7 @@ import { ORDER_QUERY, USER_QUERY, CHECKOUT_ORDER_QUERY } from '../../graphql/que
 import OrderDialogs from 'OrderDialogs'
 import { OrderPropType, UserPropType } from '../../lib/propTypes'
 import OrderGrid from 'OrderGrid'
+import LoadingOverlay from '../../components/LoadingOverlay'
 
 class Order extends React.Component {
   static propTypes = {
@@ -190,6 +191,7 @@ class OrderMutations extends React.Component {
             window.localStorage.removeItem('token')
             this.props.history.push('/')
           }
+          if (user.loading) return (<LoadingOverlay />)
           return (
             <Query query={CHECKOUT_ORDER_QUERY} variables={params}>
               {(order) => {

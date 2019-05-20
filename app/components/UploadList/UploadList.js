@@ -9,7 +9,6 @@ import ListItemSecondaryAction from '@material-ui/core/ListItemSecondaryAction'
 import ListItemText from '@material-ui/core/ListItemText'
 import Typography from '@material-ui/core/Typography'
 import { Mutation } from 'react-apollo'
-import UploadListStatusButton from '../UploadListStatusButton'
 import 'isomorphic-fetch'
 import {
   DELETE_UPLOAD

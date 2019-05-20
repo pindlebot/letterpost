@@ -1,13 +1,16 @@
 import pattern from '../../styles/pattern'
 
-export default {
+export default theme => ({
   container: {
     width: '100vw',
     height: '100vh',
     backgroundColor: '#fafafa',
     position: 'absolute',
     padding: '10% 80px 10% 80px',
-    boxSizing: 'border-box'
+    boxSizing: 'border-box',
+    [theme.breakpoints.down('sm')]: {
+      padding: 0
+    }
   },
   inset: {
     width: '100%',
@@ -25,16 +28,19 @@ export default {
     display: 'flex',
     flexDirection: 'column',
     justifyContent: 'space-between',
+    [theme.breakpoints.down('sm')]: {
+      width: '100%'
+    }
   },
   right: {
     backgroundClip: 'border-box',
     width: 'calc(100% - 400px)',
     borderTopRightRadius: '5px',
     borderBottomRightRadius: '5px',
-    // backgroundSize: '28px 28px',
-    // backgroundColor: '#fafafa',
-    // backgroundImage: 'radial-gradient(circle, #D7D7D7, #D7D7D7 1px, #FFF 1px, #FFF)',
-    backgroundImage: 'linear-gradient(120deg, #89f7fe 0%, #66a6ff 100%)'
+    backgroundImage: 'linear-gradient(120deg, #89f7fe 0%, #66a6ff 100%)',
+    [theme.breakpoints.down('sm')]: {
+      display: 'none'
+    }
   },
   login: {
     flexDirection: 'column',
@@ -47,11 +53,9 @@ export default {
     boxShadow: '0 15px 35px rgba(50,50,93,.1), 0 5px 15px rgba(0,0,0,.07)',
     borderRadius: '4px',
     margin: '0 auto',
-    // padding: 40,
     backgroundColor: '#fff',
     minWidth: 400,
     minHeight: 340,
-    // height: 240,
     display: 'flex',
     flexDirection: 'column',
     justifyContent: 'space-between'
@@ -84,4 +88,4 @@ export default {
     justifyContent: 'space-between',
     padding: 40
   }
-}
+})

@@ -1,15 +1,9 @@
 import React from 'react'
 import PropTypes from 'prop-types'
 import { withStyles } from '@material-ui/core/styles'
-import CircularProgress from '@material-ui/core/CircularProgress'
 import classnames from 'classnames'
 
 const styles = () => ({
-  // '@global': {
-  //  body: {
-  //    backgroundColor: '#29b6f6'
-  //  }
-  // },
   progress: {
     margin: '0 auto 0 auto',
     color: '#8898AA'
@@ -36,6 +30,9 @@ const styles = () => ({
     animation: 'sk-bouncedelay 1.4s infinite ease-in-out both',
     marginRight: 10
   },
+  paused: {
+    animationPlayState: 'paused'
+  },
   '@keyframes sk-bouncedelay': {
     '0%, 80%, 100%': {
       transform: 'scale(0)'
@@ -56,15 +53,16 @@ const styles = () => ({
 const Spinner = props => {
   const {
     classes,
-    fullPage
+    fullPage,
+    paused
   } = props
   const className = fullPage ? classes.fullPage : classes.icon
   return (
     <div className={className}>
       <div className={classes.spinner}>
-        <div className={classnames(classes.bounce, classes.bounce1)} />
-        <div className={classnames(classes.bounce, classes.bounce2)} />
-        <div className={classnames(classes.bounce, classes.bounce3)} />
+        <div className={classnames(classes.bounce, classes.bounce1, { [classes.paused]: paused })} />
+        <div className={classnames(classes.bounce, classes.bounce2, { [classes.paused]: paused })} />
+        <div className={classnames(classes.bounce, classes.bounce3, { [classes.paused]: paused })} />
       </div>
     </div>
   )
@@ -76,7 +74,8 @@ Spinner.propTypes = {
 }
 
 Spinner.defaultProps = {
-  fullPage: true
+  fullPage: true,
+  paused: false
 }
 
 export default withStyles(styles)(Spinner)

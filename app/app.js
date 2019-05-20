@@ -2,13 +2,13 @@ import React from 'react'
 import { render } from 'react-dom'
 import 'isomorphic-fetch'
 import { ConnectedRouter, push } from 'connected-react-router'
-import { ApolloProvider, withApollo, compose } from 'react-apollo'
+import { ApolloProvider, withApollo, compose, Query } from 'react-apollo'
 import { MuiThemeProvider } from '@material-ui/core/styles'
 import { Route, Switch } from 'react-router-dom'
 import { Provider, ReactReduxContext, connect } from 'react-redux'
 import { CSSTransition } from 'react-transition-group'
 
-import pages, { LoadingOverlay } from './pages'
+import pages from './pages'
 import createClient from './lib/apolloClient'
 import { store, history, setLoadingState } from './lib/redux'
 import theme from './theme'
@@ -16,8 +16,17 @@ import ValidationErrorsSnackbar from './components/ValidationErrorsSnackbar'
 import GraphQLErrorsSnackbar from './components/GraphQLErrorsSnackbar'
 import getToken from './lib/getToken'
 import { SnackbarProvider, withSnackbar } from 'notistack'
-
+import LoadingOverlay from './components/LoadingOverlay'
 import './styles/main.scss'
+import gql from 'graphql-tag'
+
+const ORDER_QUERY = gql`
+  query ($id: ID) {
+    currentOrder(id: $id) {
+      id
+    }
+  }
+`
 
 class App extends React.Component {
   state = {
@@ -34,25 +43,31 @@ class App extends React.Component {
       ? []
       : pages
     return (
-      <React.Fragment>
-        <ValidationErrorsSnackbar />
-        <GraphQLErrorsSnackbar />
-        <React.Suspense fallback={<div />}>
-          <Switch>
-            {appRoutes.map(({ component: Component, ...rest }) => (
-              <Route {...rest} render={props => <Component {...props} {...this.props} />} />
-            ))}
+      <Query query={ORDER_QUERY}>
+        {order => (
+          <React.Fragment>
+            <ValidationErrorsSnackbar />
+            <GraphQLErrorsSnackbar />
+            <React.Suspense fallback={<div />}>
+              <Switch>
+                {appRoutes.map(({ component: Component, ...rest }) => (
+                  <Route {...rest} render={props => <Component {...props} {...this.props} order={order} />} />
+                ))}
+              </Switch>
+            </React.Suspense>
             <CSSTransition
               in={this.props.app.loading}
-              timeout={1000}
+              timeout={3000}
               classNames='loading'
               unmountOnExit
             >
-              {state => <LoadingOverlay />}
+              {state => {
+                return (<LoadingOverlay paused={state === 'exiting'} />)
+              }}
             </CSSTransition>
-          </Switch>
-        </React.Suspense>
-      </React.Fragment>
+          </React.Fragment>
+        )}
+      </Query>
     )
   }
 }

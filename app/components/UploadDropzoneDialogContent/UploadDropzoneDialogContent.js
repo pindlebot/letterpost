@@ -5,7 +5,6 @@ import Button from '@material-ui/core/Button'
 import UploadDropzone from '../UploadDropzone'
 import DialogContent from '@material-ui/core/DialogContent'
 import DialogTitle from '@material-ui/core/DialogTitle'
-import { withStyles } from '@material-ui/core/styles'
 import UploadList from '../UploadList'
 import ImageIcon from '@material-ui/icons/Image'
 import CloudUploadIcon from '@material-ui/icons/CloudUpload'
@@ -17,16 +16,14 @@ const thumbnailStyles = {
   objectFit: 'scale-down'
 }
 
-const Thumbnail = ({ currentOrder }) => {
-  if (!(
-    currentOrder &&
-    currentOrder.upload &&
-    currentOrder.upload.thumbnail
-  )) {
+const Thumbnail = ({ currentOrder, uploads }) => {
+  if (!currentOrder?.upload) {
     return false
   }
-  return (<img src={currentOrder.upload.thumbnail} style={thumbnailStyles} />)
+  const upload = uploads.data.uploads.find(upload => upload.id === currentOrder.upload.id)
+  return (<img src={upload.thumbnail} style={thumbnailStyles} />)
 }
+
 
 class UploadDropzoneDialogContent extends React.Component {
   static propTypes = {
@@ -81,7 +78,6 @@ class UploadDropzoneDialogContent extends React.Component {
                 uploads={this.props.uploads}
                 client={this.props.client}
               />
-
               <ToggleButtonGroup
                 value={this.state.alignment}
                 exclusive
@@ -106,7 +102,7 @@ class UploadDropzoneDialogContent extends React.Component {
                   uploads={this.props.uploads}
                   handleClick={this.props.handleClick}
                 />
-                : <Thumbnail currentOrder={currentOrder} />}
+                : <Thumbnail currentOrder={currentOrder} uploads={this.props.uploads} />}
             </div>
           </div>
         </DialogContent>

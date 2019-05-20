@@ -1,30 +1,7 @@
 import React from 'react'
-import Spinner from './components/Spinner'
 import { Query } from 'react-apollo'
 import { Redirect } from 'react-router-dom'
 import gql from 'graphql-tag'
-
-const styles = {
-  width: '100%',
-  minHeight: '100vh',
-  position: 'absolute',
-  padding: '40vh',
-  boxSizing: 'border-box',
-  top: 0,
-  zIndex: 0,
-  pointerEvents: 'none',
-  backgroundImage: 'linear-gradient(to bottom, #121212 0%, #323232 100%)'
-}
-
-export const LoadingOverlay = ({ loading, children }) => (
-  <div style={{ ...styles }}>
-    <Spinner />
-  </div>
-)
-
-LoadingOverlay.defaultProps = {
-  loading: true
-}
 
 export const Home = React.lazy(() => import('./containers/Home'))
 export const Order = React.lazy(() => import('./containers/Order'))
@@ -45,13 +22,10 @@ const ORDER_QUERY = gql`
 `
 class CheckoutRedirect extends React.Component {
   render () {
+    const { order } = this.props
+    if (order.loading) return false
     return (
-      <Query query={ORDER_QUERY}>
-        {({ data, loading }) => {
-          if (loading) return null
-          return (<Redirect to={`/order/${data.currentOrder.id}`} />)
-        }}
-      </Query>
+      <Redirect to={`/order/${order.data.currentOrder.id}`} />
     )
   }
 }
