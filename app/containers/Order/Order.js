@@ -12,37 +12,10 @@ import {
 import 'isomorphic-fetch'
 import { withRouter } from 'react-router-dom'
 import styles from './styles'
-import { ORDER_QUERY, USER_QUERY } from '../../graphql/queries'
+import { ORDER_QUERY, USER_QUERY, CHECKOUT_ORDER_QUERY } from '../../graphql/queries'
 import OrderDialogs from 'OrderDialogs'
-import EditEmailTextField from 'EditEmailTextField'
 import { OrderPropType, UserPropType } from '../../lib/propTypes'
 import OrderGrid from 'OrderGrid'
-
-class EditEmailTextFieldWithMutations extends React.Component {
-  updateUser = mutate => variables => mutate({
-    variables,
-    optimisticResponse: {
-      __typename: 'Mutation',
-      updateUser: {
-        ...variables.input,
-        __typename: 'User'
-      }
-    }
-  })
-
-  render () {
-    return (
-      <Mutation mutation={UPDATE_USER}>
-        {(mutate, { error, data, loading }) => (
-          <EditEmailTextField
-            {...this.props}
-            updateUser={this.updateUser(mutate)}
-          />)
-        }
-      </Mutation>
-    )
-  }
-}
 
 class Order extends React.Component {
   static propTypes = {
@@ -149,19 +122,19 @@ class Order extends React.Component {
     })
   }
 
-  zipLookup = async (contact) => {
-    const url = `${window.location.origin}/ziplookup/${contact.postalCode}`
-    const resp = await fetch(url)
-    const json = await resp.json()
-    const { city, state } = json
-    this.props.updateContact({
-      input: {
-        ...contact,
-        city,
-        state
-      }
-    })
-  }
+  // zipLookup = async (contact) => {
+  //   const url = `${window.location.origin}/ziplookup/${contact.postalCode}`
+  //   const resp = await fetch(url)
+  //   const json = await resp.json()
+  //   const { city, state } = json
+  //   this.props.updateContact({
+  //     input: {
+  //       ...contact,
+  //       city,
+  //       state
+  //     }
+  //   })
+  // }
 
   handleDialogClose = () => new Promise((resolve, reject) =>
     this.setState({ open: undefined }, resolve))
@@ -173,12 +146,6 @@ class Order extends React.Component {
       pending,
       complete
     } = this.props
-    const currentOrder = order?.data?.currentOrder
-    const user = this.props.user?.data?.user
-    let { error } = this.state
-    let upload = currentOrder?.upload
-    let contact = currentOrder?.contact
-    let letter = currentOrder?.letter
     return (
       <Layout {...other}>
         <OrderDialogs
@@ -224,7 +191,7 @@ class OrderMutations extends React.Component {
             this.props.history.push('/')
           }
           return (
-            <Query query={ORDER_QUERY} variables={params}>
+            <Query query={CHECKOUT_ORDER_QUERY} variables={params}>
               {(order) => {
                 if (order.error) {
                   return (

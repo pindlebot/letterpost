@@ -1,4 +1,5 @@
 import React from 'react'
+import PropTypes from 'prop-types'
 import Grid from '@material-ui/core/Grid'
 import classnames from 'classnames'
 import List from '@material-ui/core/List'
@@ -21,46 +22,8 @@ import { Mutation } from 'react-apollo'
 import Quote from 'Quote'
 import OrderDetailsOptions from 'OrderDetailsOptions'
 import {
-  UPDATE_ORDER,
-  CREATE_LETTER,
-  CREATE_CHARGE,
   UPDATE_USER
 } from '../../graphql/mutations'
-class GridItem extends React.Component {
-  render () {
-    const {
-      classes,
-      container,
-      label,
-      step,
-      primary
-    } = this.props
-
-    return (
-      <Grid
-        item
-        xs={12}
-        sm={6}
-        className={classes.left}
-        container={container}
-      >
-        {primary ? (
-          <List className={classes.half}>
-            <ListItem>
-              <ListItemIcon><AttachmentIcon /></ListItemIcon>
-              <ListItemText
-                inset
-                primary={primary}
-              />
-            </ListItem>
-          </List>
-        ) : (
-          <OrderStepHeading step={step} label={label} />
-        )}
-      </Grid>
-    )
-  }
-}
 
 const GridRow = props => (
   <Grid container item direction={'row'} className={props.className}>{props.children}</Grid>
@@ -109,6 +72,23 @@ class EditEmailTextFieldWithMutations extends React.Component {
 }
 
 class OrderGrid extends React.Component {
+  static propTypes = {
+    order: PropTypes.shape({
+      data: PropTypes.shape({
+        currentOrder: PropTypes.shape({
+          upload: PropTypes.shape({
+            name: PropTypes.string
+          }),
+          contact: PropTypes.shape({
+            address: PropTypes.shape({
+              name: PropTypes.string
+            })
+          })
+        })
+      })
+    })
+  }
+
   render () {
     const { classes, ...other } = this.props
     const {

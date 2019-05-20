@@ -154,11 +154,20 @@ export const rootReducer = redux.combineReducers({
   root: reducer
 })
 
+const composeEnhancers =
+  typeof window === 'object' &&
+  window.__REDUX_DEVTOOLS_EXTENSION_COMPOSE__ ?
+    window.__REDUX_DEVTOOLS_EXTENSION_COMPOSE__({
+      // Specify extension’s options like name, actionsBlacklist, actionsCreators, serialize...
+    }) : redux.compose
+
+const middleware = [routerMiddleware(history)]
+
+const enhancer = composeEnhancers(
+  redux.applyMiddleware(...middleware)
+)
+
 export const store = redux.createStore(
   rootReducer,
-  redux.compose(
-    redux.applyMiddleware(
-      routerMiddleware(history)
-    )
-  )
+  enhancer
 )

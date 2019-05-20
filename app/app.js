@@ -15,6 +15,7 @@ import theme from './theme'
 import ValidationErrorsSnackbar from './components/ValidationErrorsSnackbar'
 import GraphQLErrorsSnackbar from './components/GraphQLErrorsSnackbar'
 import getToken from './lib/getToken'
+import { SnackbarProvider, withSnackbar } from 'notistack'
 
 import './styles/main.scss'
 
@@ -64,7 +65,8 @@ const ComposedApp = compose(
       redirect: pathname => dispatch(push(pathname))
     })
   ),
-  withApollo
+  withApollo,
+  withSnackbar
 )(App)
 
 const client = createClient()
@@ -74,7 +76,9 @@ render(
     <Provider store={store} context={ReactReduxContext}>
       <ConnectedRouter history={history} context={ReactReduxContext}>
         <MuiThemeProvider theme={theme}>
-          <ComposedApp />
+          <SnackbarProvider maxSnack={3}>
+            <ComposedApp />
+          </SnackbarProvider>
         </MuiThemeProvider>
       </ConnectedRouter>
     </Provider>

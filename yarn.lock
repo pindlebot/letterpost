@@ -1434,6 +1434,24 @@ apollo-client@2.5.1:
     tslib "^1.9.3"
     zen-observable "^0.8.0"
 
+apollo-link-batch-http@^1.2.11:
+  version "1.2.11"
+  resolved "https://registry.yarnpkg.com/apollo-link-batch-http/-/apollo-link-batch-http-1.2.11.tgz#ae42dbcc02820658e1e267d05bf2aae7ac208088"
+  integrity sha512-f+KEdbP51I3AeEaBDW2lKS3eaPK/1IXaTM9F2moj02s1hgC/TzeUORRuUeOExW8ggXveW1Jzp6aYMJ2SQkZJyA==
+  dependencies:
+    apollo-link "^1.2.11"
+    apollo-link-batch "^1.1.12"
+    apollo-link-http-common "^0.2.13"
+    tslib "^1.9.3"
+
+apollo-link-batch@^1.1.12:
+  version "1.1.12"
+  resolved "https://registry.yarnpkg.com/apollo-link-batch/-/apollo-link-batch-1.1.12.tgz#64eb231082f182b0395ef7ab903600627f6c7fe8"
+  integrity sha512-6NqLiB9tEGxRiyhtnX/7CPHkmFG0IXfEP7pC5kirhjV+4KxqBaWvJnJGKpGp7Owgdph7KJlV+9+niOKEkcwreg==
+  dependencies:
+    apollo-link "^1.2.11"
+    tslib "^1.9.3"
+
 apollo-link-context@^1.0.17:
   version "1.0.17"
   resolved "https://registry.yarnpkg.com/apollo-link-context/-/apollo-link-context-1.0.17.tgz#439272cfb43ec1891506dd175ed907845b7de36c"
@@ -2129,7 +2147,7 @@ class-utils@^0.3.5:
     isobject "^3.0.0"
     static-extend "^0.1.1"
 
-classnames@^2.2.5:
+classnames@^2.2.5, classnames@^2.2.6:
   version "2.2.6"
   resolved "https://registry.yarnpkg.com/classnames/-/classnames-2.2.6.tgz#43935bffdd291f326dad0a205309b38d00f650ce"
   integrity sha512-JR/iSQOSt+LQIWwrwEzJ9uk0xfN3mTVYMwt1Ir5mUcSN6pU+V4zQFFaJsclJbPuAUQH+yfWef6tm7l1quW3C8Q==
@@ -5510,6 +5528,16 @@ normalize-url@^3.0.0:
   version "3.3.0"
   resolved "https://registry.yarnpkg.com/normalize-url/-/normalize-url-3.3.0.tgz#b2e1c4dc4f7c6d57743df733a4f5978d18650559"
   integrity sha512-U+JJi7duF1o+u2pynbp2zXDW2/PADgC30f0GsHZtRh+HOcXHnw137TrNlyxxRvWW5fjKd3bcLHPxofWuCjaeZg==
+
+notistack@^0.8.4:
+  version "0.8.4"
+  resolved "https://registry.yarnpkg.com/notistack/-/notistack-0.8.4.tgz#6fbebfebce375248a1971de56102f60a7c4fd335"
+  integrity sha512-628DGXoY7AVZDPfHQ+xJPUvcOY2Gok/kT1ahK4XqH7EySLj6DSmqK2HApD52X/LrGdqRrfuKp8fiXxer8PQ1Dg==
+  dependencies:
+    classnames "^2.2.6"
+    hoist-non-react-statics "^3.3.0"
+    prop-types "^15.6.2"
+    react-is "^16.8.6"
 
 npm-bundled@^1.0.1:
   version "1.0.6"

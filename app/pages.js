@@ -1,5 +1,8 @@
 import React from 'react'
 import Spinner from './components/Spinner'
+import { Query } from 'react-apollo'
+import { Redirect } from 'react-router-dom'
+import gql from 'graphql-tag'
 
 const styles = {
   width: '100%',
@@ -33,6 +36,26 @@ export const CookiePolicy = React.lazy(() => import('./containers/CookiePolicy')
 export const Disclaimer = React.lazy(() => import('./containers/Disclaimer'))
 export const Unsubscribe = React.lazy(() => import('./containers/Unsubscribe'))
 
+const ORDER_QUERY = gql`
+  query ($id: ID) {
+    currentOrder(id: $id) {
+      id
+    }
+  }
+`
+class CheckoutRedirect extends React.Component {
+  render () {
+    return (
+      <Query query={ORDER_QUERY}>
+        {({ data, loading }) => {
+          if (loading) return null
+          return (<Redirect to={`/order/${data.currentOrder.id}`} />)
+        }}
+      </Query>
+    )
+  }
+}
+
 export default [{
   component: Home,
   path: '/',
@@ -40,8 +63,13 @@ export default [{
   key: 'home'
 }, {
   component: Order,
-  path: '/order/:id?',
+  path: '/order/:id',
   key: 'order'
+}, {
+  component: CheckoutRedirect,
+  path: '/order',
+  exact: true,
+  key: 'checkout-redirect'
 }, {
   component: SignIn,
   path: '/login',

@@ -6,12 +6,12 @@ import DialogActions from '@material-ui/core/DialogActions'
 import DialogTitle from '@material-ui/core/DialogTitle'
 import DialogContentText from '@material-ui/core/DialogContentText'
 import DialogContent from '@material-ui/core/DialogContent'
-import { graphql, compose, Mutation } from 'react-apollo'
+import { graphql, compose, Mutation, Query } from 'react-apollo'
 import ContactList from '../ContactList'
 import RecipientForm from '../RecipientForm'
 import Button from '@material-ui/core/Button'
 import AddIcon from '@material-ui/icons/Add'
-import { CONTACTS_QUERY, ORDER_QUERY } from '../../graphql/queries'
+import { CONTACTS_QUERY, ORDER_CONTACTS_QUERY } from '../../graphql/queries'
 import { CREATE_CONTACT, UPDATE_CONTACT } from '../../graphql/mutations'
 import formStyles from './styles'
 import Grid from '@material-ui/core/Grid'
@@ -35,15 +35,21 @@ class RecipientFormDialog extends React.Component {
 
   onChange = (element) => {
     const { order: { data: { currentOrder } } } = this.props
+    const variables = { id: currentOrder.id }
+    const data = this.props.client.readQuery({
+      query: ORDER_CONTACTS_QUERY,
+      variables
+    })
     this.props.client.writeQuery({
-      query: ORDER_QUERY,
+      query: ORDER_CONTACTS_QUERY,
+      variables: { id: currentOrder.id },
       data: {
         currentOrder: {
-          ...currentOrder,
+          ...data.currentOrder,
           contact: {
-            ...currentOrder.contact,
+            ...data.currentOrder.contact,
             address: {
-              ...currentOrder.contact.address,
+              ...data.currentOrder.contact.address,
               ...element
             }
           }
@@ -58,15 +64,18 @@ class RecipientFormDialog extends React.Component {
       ? null
       : contact
 
-    this.props.client.writeQuery({
-      query: ORDER_QUERY,
+    const query = {
+      query: ORDER_CONTACTS_QUERY,
+      variables: { id: currentOrder.id },
       data: {
         currentOrder: {
           ...currentOrder,
           contact: orderContact
         }
       }
-    })
+    }
+
+    this.props.client.writeQuery(query)
   }
 
   handleClose = () => {
@@ -138,64 +147,65 @@ class RecipientFormDialog extends React.Component {
         }
       }
     } = this.props
-    let contact = currentOrder?.contact
     return (
-      <Mutation mutation={UPDATE_CONTACT}>
-        {(updateContact) => {
-          return (
-            <Mutation mutation={CREATE_CONTACT}>
-              {(createContact) => {
-                return (
-                  <Dialog
-                    open={this.props.open}
-                    onClose={this.handleClose}
-                    fullScreen={window.innerWidth < 481}
-                    maxWidth={false}
-                    PaperProps={{
-                      classes: {
-                        root: this.props.classes.paper
-                      }
-                    }}
-                  >
-                    <DialogTitle>
-                      Shipping Address
-                    </DialogTitle>
-                    <DialogContent style={{ flexGrow: 1 }}>
-                      <Grid container spacing={24}>
-                        <Grid item xs={12}>
-                          <DialogContentText>
-                            Where should we send this order?
-                          </DialogContentText>
+      <Query query={ORDER_CONTACTS_QUERY} variables={{ id: currentOrder?.id }} skip={!this.props.open}>
+        {order => (
+          <Mutation mutation={UPDATE_CONTACT}>
+            {(updateContact) => (
+              <Mutation mutation={CREATE_CONTACT}>
+                {(createContact) => {
+                  return (
+                    <Dialog
+                      open={this.props.open}
+                      onClose={this.handleClose}
+                      fullScreen={window.innerWidth < 481}
+                      maxWidth={false}
+                      PaperProps={{
+                        classes: {
+                          root: this.props.classes.paper
+                        }
+                      }}
+                    >
+                      <DialogTitle>
+                        Shipping Address
+                      </DialogTitle>
+                      <DialogContent style={{ flexGrow: 1 }}>
+                        <Grid container spacing={24}>
+                          <Grid item xs={12}>
+                            <DialogContentText>
+                              Where should we send this order?
+                            </DialogContentText>
+                          </Grid>
+                          <Grid item xs={12} sm={6}>
+                            <ContactList
+                              selectContact={this.selectContact}
+                              order={order}
+                              client={this.props.client}
+                            />
+                          </Grid>
+                          <Grid item xs={12} sm={6}>
+                            <RecipientForm
+                              user={this.props.user}
+                              client={this.props.client}
+                              order={order}
+                            />
+                          </Grid>
                         </Grid>
-                        <Grid item xs={12} sm={6}>
-                          <ContactList
-                            selectContact={this.selectContact}
-                            order={this.props.order}
-                            client={this.props.client}
-                          />
-                        </Grid>
-                        <Grid item xs={12} sm={6}>
-                          <RecipientForm
-                            user={this.props.user}
-                            client={this.props.client}
-                            order={this.props.order}
-                          />
-                        </Grid>
-                      </Grid>
-                    </DialogContent>
-                    <DialogActions className={classes.actions}>
-                      <Button onClick={this.createContact(createContact)}>
-                        <AddIcon /> Add A Contact
-                      </Button>
-                      <Button onClick={this.handleClose}>Done</Button>
-                    </DialogActions>
-                  </Dialog>
-                )
-              }}
-            </Mutation>
-          )
-        }}
-      </Mutation>
+                      </DialogContent>
+                      <DialogActions className={classes.actions}>
+                        <Button onClick={this.createContact(createContact)}>
+                          <AddIcon /> Add A Contact
+                        </Button>
+                        <Button onClick={this.handleClose}>Done</Button>
+                      </DialogActions>
+                    </Dialog>
+                  )
+                }}
+              </Mutation>
+            )}
+          </Mutation>
+        )}
+      </Query>
     )
   }
 }

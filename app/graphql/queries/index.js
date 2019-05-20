@@ -15,9 +15,6 @@ export const CONTACTS_QUERY = gql`
         country
         kind
       }
-      orders {
-        id
-      }
     }
   }
 `
@@ -36,9 +33,6 @@ export const CONTACT_QUERY = gql`
         postalCode
         country
         kind
-      }
-      orders {
-        id
       }
     }
   }
@@ -101,6 +95,44 @@ export const ORDER_QUERY = gql`
         extraService
         returnEnvelope
         mailType
+      }
+      charge {
+        id
+        amount
+      }
+      letter {
+        id
+        createdAt
+        expectedDeliveryDate
+        trackingNumber
+        carrier
+        mailType
+        status
+        sendDate
+      }
+    }
+  }
+`
+
+export const CHECKOUT_ORDER_QUERY = gql`
+  query ($id: ID) {
+    currentOrder(id: $id) {
+      id
+      updatedAt
+      paid
+      contact {
+        id
+        address {
+          name
+        }
+      }
+      upload {
+        id
+        name
+        status
+      }
+      options {
+        id
       }
       charge {
         id
@@ -186,15 +218,6 @@ export const USER_QUERY = gql`
         id
         last4
         stripeCustomerId
-      }
-      currentOrder {
-        id
-      }
-      orders {
-        id
-      }
-      contacts {
-        id
       }
     }
   }
@@ -307,6 +330,45 @@ export const MESSAGE_QUERY = gql`
       text
       textAsHtml
       to
+    }
+  }
+`
+
+export const ORDER_CONTACTS_QUERY = gql`
+  query ($id: ID) {
+    currentOrder(id: $id) {
+      id
+      contact {
+        id
+        address {
+          id
+          name
+          street
+          apt
+          city
+          state
+          postalCode
+          country
+          kind
+        }
+      }
+    }
+  }
+`
+
+export const ORDER_OPTIONS_QUERY = gql`
+  query ($id: ID) {
+    currentOrder(id: $id) {
+      id
+      options {
+        id
+        doubleSided
+        color
+        perforatedPage
+        extraService
+        returnEnvelope
+        mailType
+      }
     }
   }
 `

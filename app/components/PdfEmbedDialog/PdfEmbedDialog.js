@@ -11,6 +11,8 @@ import DialogActions from '@material-ui/core/DialogActions'
 import DialogContent from '@material-ui/core/DialogContent'
 import Dialog from '@material-ui/core/Dialog'
 import PdfEmbed from '../PdfEmbed'
+import { Query } from 'react-apollo'
+import { UPLOAD_QUERY } from '../../graphql/queries'
 
 class PdfEmbedDialog extends React.Component {
   state = {
@@ -32,47 +34,51 @@ class PdfEmbedDialog extends React.Component {
   render () {
     const { order: { data: { currentOrder } } } = this.props
     if (!(currentOrder && currentOrder.upload)) return false
-    const { upload: { file, pages } } = currentOrder
     const { classes } = this.props
     return (
-      <Dialog
-        open={this.props.open}
-        PaperProps={{
-          style: {
-            height: '90vh',
-            width: '90vw',
-            backgroundColor: '#404040',
-            backgroundImage: `url("${texture}")`
-          }
-        }}
-      >
-        <div className={classes.header}>
-          <div>
-            <IconButton onClick={this.decrement}>
-              <KeyboardArrowLeft />
-            </IconButton>
-            <IconButton onClick={this.increment}>
-              <KeyboardArrowRight />
-            </IconButton>
-          </div>
-          <div>
-            {this.state.page + ' / ' + pages}
-          </div>
-        </div>
-        <DialogContent className={classes.content}>
-          <div className={classes.canvas}>
-            <PdfEmbed
-              url={file}
-              open={this.props.open}
-              page={this.state.page}
-            />
-          </div>
-        </DialogContent>
-        <DialogActions className={classes.actions}>
-          <Button onClick={this.props.handleClose}>Cancel</Button>
-          <Button onClick={this.props.submitOrder}>Submit Order</Button>
-        </DialogActions>
-      </Dialog>
+      <Query skip={!this.props.open} query={UPLOAD_QUERY} variables={{ id: currentOrder?.upload?.id }}>
+        {upload => (
+          <Dialog
+            open={this.props.open}
+            PaperProps={{
+              style: {
+                height: '90vh',
+                width: '90vw',
+                backgroundColor: '#404040',
+                backgroundImage: `url("${texture}")`
+              }
+            }}
+          >
+            <div className={classes.header}>
+              <div>
+                <IconButton onClick={this.decrement}>
+                  <KeyboardArrowLeft />
+                </IconButton>
+                <IconButton onClick={this.increment}>
+                  <KeyboardArrowRight />
+                </IconButton>
+              </div>
+              <div>
+                {!upload?.loading && this.state.page + ' / ' + upload?.data?.upload.pages}
+              </div>
+            </div>
+            <DialogContent className={classes.content}>
+              <div className={classes.canvas}>
+                {upload.data && (
+                  <PdfEmbed
+                    url={upload?.data?.upload?.file}
+                    open={this.props.open}
+                    page={this.state.page}
+                  />)}
+              </div>
+            </DialogContent>
+            <DialogActions className={classes.actions}>
+              <Button onClick={this.props.handleClose}>Cancel</Button>
+              <Button onClick={this.props.submitOrder}>Submit Order</Button>
+            </DialogActions>
+          </Dialog>
+        )}
+      </Query>
     )
   }
 }

@@ -6,21 +6,21 @@ const OrderDetailsToggle = props => {
   const {
     updateOptions,
     checked,
-    order,
+    options,
     name
   } = props
   return (
     <Switch
       checked={checked}
       onChange={() => {
-        const { order: { options } } = props
+        const { options } = props
         const input = name === 'mailType'
           ? { id: options.id, [name]: checked ? 'USPS_STANDARD' : 'USPS_FIRST_CLASS' }
           : { id: options.id, [name]: !checked }
         updateOptions({ input })
       }}
       aria-label={name}
-      disabled={order === null}
+      disabled={!options}
     />
   )
 }
@@ -28,13 +28,13 @@ const OrderDetailsToggle = props => {
 OrderDetailsToggle.defaultProps = {
   checked: false,
   name: '',
-  order: null
+  options: {}
 }
 
 OrderDetailsToggle.propTypes = {
   updateOptions: PropTypes.func.isRequired,
   checked: PropTypes.bool.isRequired,
-  order: PropTypes.object,
+  options: PropTypes.object,
   name: PropTypes.string
 }
 

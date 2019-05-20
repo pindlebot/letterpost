@@ -41,6 +41,7 @@ class ContactList extends React.Component {
   render () {
     const {
       classes,
+      order,
       ...rest
     } = this.props
 
@@ -58,7 +59,7 @@ class ContactList extends React.Component {
                     {contacts.data.contacts.map(contact => (
                       <ContactListItem
                         contact={contact}
-                        order={this.props.order}
+                        checked={order?.data?.currentOrder?.contact?.id === contact.id}
                         key={contact.id}
                         deleteContact={this.deleteContact({ mutate })}
                         selectContact={this.props.selectContact}

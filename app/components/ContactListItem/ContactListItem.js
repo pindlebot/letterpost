@@ -27,14 +27,9 @@ const ContactListItem = props => {
     deleteContact,
     classes,
     contact,
-    order: {
-      data: {
-        currentOrder
-      }
-    }
+    checked
   } = props
   const { address } = contact
-  const checked = currentOrder?.contact?.id === contact.id
   return (
     <ListItem
       button
