@@ -14,7 +14,7 @@ import OrderDetailsExtraService from '../OrderDetailsExtraService'
 import classnames from 'classnames'
 import styles from './styles.scss'
 
-import List from 'antd/lib/List'
+import List from 'antd/lib/list'
 
 const icons = {
   color: <InvertColors />,

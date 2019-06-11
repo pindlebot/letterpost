@@ -1,7 +1,7 @@
 import React from 'react'
 import PropTypes from 'prop-types'
 import classnames from 'classnames'
-import List from 'antd/lib/List'
+import List from 'antd/lib/list'
 // import Button from '@material-ui/core/Button'
 import ListItemIcon from '@material-ui/core/ListItemIcon'
 import AttachmentIcon from '@material-ui/icons/Attachment'
