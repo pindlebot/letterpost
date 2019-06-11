@@ -114,7 +114,7 @@ class TakeMoney extends React.Component {
 
     const { cards, primaryCard, emailAddress = '' } = user
     const listItemText = generateListItemText({ card: primaryCard })
-    const disabled = currentOrder.paid
+    const disabled = currentOrder?.paid || false
     return (
       <div className={this.props.classes.root}>
         <List>

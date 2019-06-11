@@ -6,10 +6,8 @@ import mutations from './mutations'
 import Typography from '@material-ui/core/Typography'
 import PasswordField from 'PasswordField'
 import Spinner from 'Spinner'
-import { withStyles } from '@material-ui/core/styles'
 import SignInEmailTextField from 'SignInEmailTextField'
 import { withRouter } from 'react-router-dom'
-import styles from './styles'
 import Tabs from '@material-ui/core/Tabs'
 import Tab from '@material-ui/core/Tab'
 import Grid from '@material-ui/core/Grid'
@@ -19,6 +17,7 @@ import { connect } from 'react-redux'
 import { setGraphQLErrors } from '../../lib/redux'
 import { push } from 'connected-react-router'
 import { parse } from 'query-string'
+import classes from './styles.scss'
 
 class Signin extends React.Component {
   static propTypes = {
@@ -106,9 +105,9 @@ class Signin extends React.Component {
             <div className={classes.inset}>
               <div className={classes.left}>
                 <form className={classes.login}>
-                  <Typography align='center' variant='h5' className={classes.title}>
+                  <div className={classes.title}>
                     LetterPost.co
-                  </Typography>
+                  </div>
                   <Tabs
                     value={this.state.tab}
                     onChange={this.handleTabChange}
@@ -181,14 +180,13 @@ export default compose(
       redirect: (pathname) => dispatch(push(pathname))
     })
   ),
-  withStyles(styles),
   withRouter
 )(props => (
   <Query query={USER_QUERY}>
     {user => {
       if (user.loading) return false
       return (
-        <Signin {...props} user={user} />
+        <Signin {...props} user={user} classes={classes} />
       )
     }}
   </Query>

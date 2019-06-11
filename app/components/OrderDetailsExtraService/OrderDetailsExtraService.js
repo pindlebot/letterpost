@@ -1,11 +1,7 @@
 import React from 'react'
 import PropTypes from 'prop-types'
-import { withStyles } from '@material-ui/core/styles'
-import ToggleButton from '@material-ui/lab/ToggleButton'
-import ToggleButtonGroup from '@material-ui/lab/ToggleButtonGroup'
-
-import FormControl from '@material-ui/core/FormControl'
-import FormLabel from '@material-ui/core/FormLabel'
+import Radio from 'antd/lib/radio'
+import styles from './styles.scss'
 
 const EXTRA_SERVICE = [
   'NONE',
@@ -29,40 +25,23 @@ class OrderDetailsExtraService extends React.Component {
   }
 
   render () {
-    const { classes } = this.props
     return (
-      <FormControl component={'fieldset'}>
-        <FormLabel component={'legend'} className={classes.formLabel}>Mail Type</FormLabel>
-        <ToggleButtonGroup
+      <div className={styles.root}>
+        <div className={styles.mailType}>Mail Type</div>
+        <Radio.Group
+          buttonStyle="solid"
           value={this.props.alignment || 'NONE'}
-          exclusive
           onChange={this.props.handleAlignment}
-          classes={{
-            root: classes.toggleButton
-          }}
         >
           {EXTRA_SERVICE.map(service => (
-            <ToggleButton value={service} disabled={this.isDisabled(service)} key={service}>
+            <Radio.Button value={service} disabled={this.isDisabled(service)} key={service} className={styles.button}>
               {service}
-            </ToggleButton>
+            </Radio.Button>
           ))}
-        </ToggleButtonGroup>
-      </FormControl>
+        </Radio.Group>
+      </div>
     )
   }
 }
 
-const styles = {
-  toggleButton: {
-    boxShadow: 'none'
-  },
-  formLabel: {
-    height: 48,
-    lineHeight: '48px',
-    fontSize: '14px',
-    fontWeight: 500,
-    color: '#586069'
-  }
-}
-
-export default withStyles(styles)(OrderDetailsExtraService)
+export default OrderDetailsExtraService

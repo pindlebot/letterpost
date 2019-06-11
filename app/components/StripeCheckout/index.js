@@ -4,7 +4,6 @@ import { PUBLIC_STRIPE_API_KEY } from '../../lib/config'
 import Button from '@material-ui/core/Button'
 import DialogContent from '@material-ui/core/DialogContent'
 import DialogActions from '@material-ui/core/DialogActions'
-import PrimaryButton from '../PrimaryButton'
 
 const CARD_ELEMENT_OPTIONS = {
   style: {

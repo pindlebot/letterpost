@@ -1,14 +1,14 @@
 import React from 'react'
 import PropTypes from 'prop-types'
-import Dialog from '@material-ui/core/Dialog'
-import { withStyles } from '@material-ui/core/styles'
 import { Query, Mutation } from 'react-apollo'
 import { UPLOADS_QUERY } from '../../graphql/queries'
 import { CREATE_UPLOAD } from '../../graphql/mutations'
 import { ID, remote, uploadDocument, PATH_REGEX, sanitizeFileName } from '../../lib/remote'
 import gql from 'graphql-tag'
-import styles from './styles'
+// import styles from './styles'
 import UploadDropzoneDialogContent from '../UploadDropzoneDialogContent'
+import Modal from 'antd/lib/modal'
+import classes from './styles.scss'
 
 class UploadDropzoneDialog extends React.Component {
   state = {
@@ -127,17 +127,35 @@ class UploadDropzoneDialog extends React.Component {
     evt.stopPropagation()
   }
 
+
+  handleModalClose = () => {
+    const { order: { data: { currentOrder } } } = this.props
+    this.props.handleClose()
+      .then(() => {
+        this.props.updateOrder({
+          input: {
+            id: currentOrder.id,
+            upload: (currentOrder?.upload?.id) || null
+          }
+        })
+      })
+  }
+
   render () {
     return (
-      <Dialog
-        open={this.props.open}
-        maxWidth={false}
-        fullScreen={window.innerWidth < 481}
-        PaperProps={{
-          classes: {
-            root: this.props.classes.paper
-          }
-        }}
+      <Modal
+        visible={this.props.open}
+        // maxWidth={false}
+        // fullScreen={window.innerWidth < 481}
+        // PaperProps={{
+        //  classes: {
+        //    root: this.props.classes.paper
+        //  }
+        // }}
+        onOk={this.handleModalClose}
+        onCancel={this.props.handleClose}
+        title={'Upload'}
+        width={800}
       >
         <div
           onDragEnter={this.onDragEnter}
@@ -147,7 +165,7 @@ class UploadDropzoneDialog extends React.Component {
           className={this.state.drag ? 'drag' : ''}
         >
           <input
-            className={this.props.classes.fileInput}
+            className={classes.fileInput}
             type={'file'}
             ref={ref => {
               this.ref = ref
@@ -158,10 +176,11 @@ class UploadDropzoneDialog extends React.Component {
           />
           <UploadDropzoneDialogContent
             handleClick={this.handleClick}
+            classes={classes}
             {...this.props}
           />
         </div>
-      </Dialog>
+      </Modal>
     )
   }
 }
@@ -182,4 +201,4 @@ class UploadDropzoneDialogQueries extends React.Component {
   }
 }
 
-export default withStyles(styles)(UploadDropzoneDialogQueries)
+export default UploadDropzoneDialogQueries

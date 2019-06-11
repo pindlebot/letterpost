@@ -1,15 +1,9 @@
 import React from 'react'
 import PropTypes from 'prop-types'
-import DialogActions from '@material-ui/core/DialogActions'
-import Button from '@material-ui/core/Button'
 import UploadDropzone from '../UploadDropzone'
-import DialogContent from '@material-ui/core/DialogContent'
-import DialogTitle from '@material-ui/core/DialogTitle'
 import UploadList from '../UploadList'
-import ImageIcon from '@material-ui/icons/Image'
-import CloudUploadIcon from '@material-ui/icons/CloudUpload'
-import ToggleButton from '@material-ui/lab/ToggleButton'
-import ToggleButtonGroup from '@material-ui/lab/ToggleButtonGroup'
+import Radio from 'antd/lib/radio'
+import styles from './styles'
 
 const thumbnailStyles = {
   height: 'calc(80vh - 53px - 68px)',
@@ -24,7 +18,6 @@ const Thumbnail = ({ currentOrder, uploads }) => {
   return (<img src={upload.thumbnail} style={thumbnailStyles} />)
 }
 
-
 class UploadDropzoneDialogContent extends React.Component {
   static propTypes = {
     open: PropTypes.bool.isRequired,
@@ -38,7 +31,7 @@ class UploadDropzoneDialogContent extends React.Component {
   }
 
   handleAlignment = (event, alignment) => {
-    this.setState({ alignment })
+    this.setState({ alignment: event.target.value })
   }
 
   handleModalClose = () => {
@@ -67,8 +60,7 @@ class UploadDropzoneDialogContent extends React.Component {
     const { alignment } = this.state
     return (
       <React.Fragment>
-        <DialogTitle>Upload</DialogTitle>
-        <DialogContent
+        <div
           className={classes.dialogContent}
         >
           <div className={classes.dialogContentRow}>
@@ -78,21 +70,20 @@ class UploadDropzoneDialogContent extends React.Component {
                 uploads={this.props.uploads}
                 client={this.props.client}
               />
-              <ToggleButtonGroup
+              <div className={styles.spacer} />
+              <Radio.Group
                 value={this.state.alignment}
-                exclusive
                 onChange={this.handleAlignment}
                 className={classes.toggleButtonGroup}
+                buttonStyle="solid"
               >
-                <ToggleButton value={'upload'} className={classes.toggleButton}>
-                  <CloudUploadIcon className={classes.icon} />
+                <Radio.Button value={'upload'} className={classes.toggleButton}>
                   <span>Upload</span>
-                </ToggleButton>
-                <ToggleButton value={'preview'} className={classes.toggleButton}>
-                  <ImageIcon className={classes.icon} />
+                </Radio.Button>
+                <Radio.Button value={'preview'} className={classes.toggleButton}>
                   <span>Preview</span>
-                </ToggleButton>
-              </ToggleButtonGroup>
+                </Radio.Button>
+              </Radio.Group>
             </div>
             <div className={classes.dialogContentColumn}>
               {alignment === 'upload'
@@ -105,10 +96,7 @@ class UploadDropzoneDialogContent extends React.Component {
                 : <Thumbnail currentOrder={currentOrder} uploads={this.props.uploads} />}
             </div>
           </div>
-        </DialogContent>
-        <DialogActions>
-          <Button onClick={this.handleModalClose}>Done</Button>
-        </DialogActions>
+        </div>
       </React.Fragment>
     )
   }

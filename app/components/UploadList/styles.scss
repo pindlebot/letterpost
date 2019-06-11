@@ -1,0 +1,42 @@
+.icon {
+  color: #757575;
+
+  &:hover {
+    color: #616161;
+    background-color: transparent;
+  }
+}
+
+.progress {
+  position: absolute;
+  height: 10px;
+  width: 100%;
+  bottom: 8px;
+  left: 0px;
+}
+
+.list {
+  // [theme.breakpoints.up('sm')]: {
+  //   height: 'calc(80vh - 68px - 53px - 24px - 42px)'
+  // },
+  // [theme.breakpoints.down('sm')]: {
+  //   marginBottom: 24
+  // }
+}
+
+.row {}
+
+.checkbox {
+  flex-basis: 10%;
+}
+
+.listItem {
+  display: flex;
+  width: 100%;
+}
+
+.listItemTitle {
+  display: flex;
+  flex-direction: column;
+  flex-basis: 80%;
+}

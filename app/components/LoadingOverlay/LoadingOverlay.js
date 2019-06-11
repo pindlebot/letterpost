@@ -2,6 +2,7 @@ import React from 'react'
 import ReactDOM from 'react-dom'
 import { withStyles } from '@material-ui/core/styles'
 import classnames from 'classnames'
+import styles from './styles.scss'
 
 class Overlay extends React.Component {
   constructor (props) {
@@ -27,7 +28,7 @@ class Overlay extends React.Component {
   }
 }
 
-const styles = () => ({
+const stylesheet = () => ({
   root: {
     position: 'absolute',
     top: 0,
@@ -85,7 +86,7 @@ class LoadingOverlay extends React.Component {
     const { paused, classes } = this.props
     return (
       <Overlay>
-        <div className={classes.root} style={{
+        <div className={styles.root} style={{
           opacity: paused ? 0 : 1
         }}>
           <div className={classes.container}>
@@ -105,4 +106,4 @@ LoadingOverlay.defaultProps = {
   paused: false
 }
 
-export default withStyles(styles)(LoadingOverlay)
+export default withStyles(stylesheet)(LoadingOverlay)

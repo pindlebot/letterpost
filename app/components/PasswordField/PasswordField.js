@@ -1,12 +1,14 @@
 import React from 'react'
 import PropTypes from 'prop-types'
 import { withStyles } from '@material-ui/core/styles'
-import IconButton from '@material-ui/core/IconButton'
-import Input from '@material-ui/core/Input'
-import InputAdornment from '@material-ui/core/InputAdornment'
-import FormControl from '@material-ui/core/FormControl'
-import Visibility from '@material-ui/icons/Visibility'
-import VisibilityOff from '@material-ui/icons/VisibilityOff'
+// import IconButton from '@material-ui/core/IconButton'
+// import Input from '@material-ui/core/Input'
+// import InputAdornment from '@material-ui/core/InputAdornment'
+// import FormControl from '@material-ui/core/FormControl'
+// ort Visibility from '@material-ui/icons/Visibility'
+// import VisibilityOff from '@material-ui/icons/VisibilityOff'
+import Input from 'antd/lib/input'
+import Button from 'antd/lib/button'
 
 const styles = theme => ({
   root: {
@@ -42,33 +44,22 @@ class PasswordField extends React.Component {
     const { showPassword } = this.state
     return (
       <div className={classes.root}>
-        <FormControl fullWidth>
-          <Input
-            id='password'
-            type={showPassword ? 'text' : 'password'}
-            value={value}
-            onChange={onChange}
-            disableUnderline
-            placeholder='Password'
-            autoComplete={'current-password'}
-            endAdornment={
-              <InputAdornment
-                position='end'
-                style={{ margin: 0 }}
-              >
-                <IconButton
-                  onClick={this.reaveal}
-                  onMouseDown={this.handleMouseDown}
-                >
-                  {showPassword
-                    ? <VisibilityOff />
-                    : <Visibility />
-                  }
-                </IconButton>
-              </InputAdornment>
-            }
-          />
-        </FormControl>
+        <Input
+          type={showPassword ? 'text' : 'password'}
+          value={value}
+          onChange={onChange}
+          placeholder='Password'
+          addonAfter={
+            <div>
+              <Button
+                shape={'circle'}
+                icon={'edit'}
+                onClick={this.reaveal}
+                onMouseDown={this.handleMouseDown}
+              />
+            </div>
+          }
+        />
       </div>
     )
   }

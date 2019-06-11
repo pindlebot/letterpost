@@ -1,15 +1,11 @@
 import React from 'react'
 import PropTypes from 'prop-types'
-import { withStyles } from '@material-ui/core/styles'
-import List from '@material-ui/core/List'
 import { Mutation, Query } from 'react-apollo'
 import ContactListItem from '../ContactListItem'
 import { DELETE_CONTACT } from '../../graphql/mutations'
 import { CONTACTS_QUERY } from '../../graphql/queries'
-
-const styles = theme => ({
-  root: {}
-})
+import List from 'antd/lib/list'
+import styles from './styles.scss'
 
 class ContactList extends React.Component {
   static propTypes = {
@@ -46,38 +42,34 @@ class ContactList extends React.Component {
     } = this.props
 
     return (
-      <div className={classes.root}>
-        <Query query={CONTACTS_QUERY}>
-          {contacts => {
-            if (contacts.loading) {
-              return false
-            }
-            return (
-              <Mutation mutation={DELETE_CONTACT}>
-                {(mutate, { error, data, loading }) => (
-                  <List disablePadding>
-                    {contacts.data.contacts.map(contact => (
-                      <ContactListItem
-                        contact={contact}
-                        checked={order?.data?.currentOrder?.contact?.id === contact.id}
-                        key={contact.id}
-                        deleteContact={this.deleteContact({ mutate })}
-                        selectContact={this.props.selectContact}
-                      />
-                    ))}
-                  </List>
-                )}
-              </Mutation>
-            )
-          }}
-        </Query>
-      </div>
+      <Query query={CONTACTS_QUERY}>
+        {contacts => {
+          if (contacts.loading) {
+            return false
+          }
+          return (
+            <Mutation mutation={DELETE_CONTACT}>
+              {(mutate, { error, data, loading }) => (
+                <List
+                  className={styles.list}
+                  dataSource={contacts.data.contacts}
+                  renderItem={(contact) => (
+                    <ContactListItem
+                      contact={contact}
+                      checked={order?.data?.currentOrder?.contact?.id === contact.id}
+                      key={contact.id}
+                      deleteContact={this.deleteContact({ mutate })}
+                      selectContact={this.props.selectContact}
+                    />
+                  )}
+                />
+              )}
+            </Mutation>
+          )
+        }}
+      </Query>
     )
   }
 }
 
-ContactList.propTypes = {
-  classes: PropTypes.object.isRequired
-}
-
-export default withStyles(styles)(ContactList)
+export default ContactList

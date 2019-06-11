@@ -99,7 +99,8 @@
           "UploadDropzoneDialog": "./app/components/UploadDropzoneDialog/index.js",
           "UploadDropzoneDialogContent": "./app/components/UploadDropzoneDialogContent/index.js",
           "UploadList": "./app/components/UploadList/index.js",
-          "ValidationErrorsSnackbar": "./app/components/ValidationErrorsSnackbar/index.js"
+          "ValidationErrorsSnackbar": "./app/components/ValidationErrorsSnackbar/index.js",
+          "Toolbar": "./app/components/Toolbar/index.js"
         }
       }
     ]

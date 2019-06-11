@@ -1,44 +1,24 @@
 import React from 'react'
-import TextField from '@material-ui/core/TextField'
-import Checkbox from '@material-ui/core/Checkbox'
-import FormControlLabel from '@material-ui/core/FormControlLabel'
-import FormGroup from '@material-ui/core/FormGroup'
+import Input from 'antd/lib/input'
+import Checkbox from 'antd/lib/checkbox'
 
 function QuotePreview () {
   return (
-    <FormGroup row>
-      <TextField
-        InputProps={{
-          disableUnderline: true
-        }}
+    <div>
+      <Input
         value={''}
         onChange={() => {}}
         placeholder={'pages'}
       />
-      <FormControlLabel
-        style={{ color: '#fff' }}
-        control={
-          <Checkbox
-            checked
-            onChange={() => {}}
-            value='color'
-          />
-        }
-        label='Color?'
+      <Checkbox
+        onChange={() => {}}
+        value='color'
       />
-      <FormControlLabel
-        style={{ color: '#fff' }}
-        control={
-          <Checkbox
-            checked
-            onChange={() => {}}
-            value='double-sided'
-          />
-        }
-        label='Double-sided?'
+      <Checkbox
+        onChange={() => {}}
+        value='double-sided'
       />
-    </FormGroup>
-
+    </div>
   )
 }
 

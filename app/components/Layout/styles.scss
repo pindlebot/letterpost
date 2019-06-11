@@ -1,0 +1,9 @@
+@import '../../styles//theme.scss';
+
+.root:global(.ant-layout-content) {
+  padding-top: 40px;
+  min-height: calc(100vh - 250px);
+  height: 100%;
+  box-sizing: border-box;
+  background-color: $darkIndigo;
+}

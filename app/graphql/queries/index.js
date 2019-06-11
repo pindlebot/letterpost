@@ -123,7 +123,15 @@ export const CHECKOUT_ORDER_QUERY = gql`
       contact {
         id
         address {
+          id
           name
+          street
+          apt
+          city
+          state
+          postalCode
+          country
+          kind
         }
       }
       upload {

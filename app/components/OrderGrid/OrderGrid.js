@@ -1,22 +1,16 @@
 import React from 'react'
 import PropTypes from 'prop-types'
-import Grid from '@material-ui/core/Grid'
 import classnames from 'classnames'
-import List from '@material-ui/core/List'
-import ListItem from '@material-ui/core/ListItem'
-import ListItemText from '@material-ui/core/ListItemText'
-import Button from '@material-ui/core/Button'
+import List from 'antd/lib/List'
+// import Button from '@material-ui/core/Button'
 import ListItemIcon from '@material-ui/core/ListItemIcon'
 import AttachmentIcon from '@material-ui/icons/Attachment'
 import OrderStepHeading from 'OrderStepHeading'
-import FormHelperText from '@material-ui/core/FormHelperText'
 import OrderCard from 'OrderCard'
 import PersonIcon from '@material-ui/icons/Person'
 import LinearProgress from '@material-ui/core/LinearProgress'
 import PaymentMethods from 'PaymentMethods'
-import Checkbox from '@material-ui/core/Checkbox'
-import FormControlLabel from '@material-ui/core/FormControlLabel'
-import FormControl from '@material-ui/core/FormControl'
+import Checkbox from 'antd/lib/checkbox'
 import EditEmailTextField from 'EditEmailTextField'
 import { Mutation } from 'react-apollo'
 import Quote from 'Quote'
@@ -24,26 +18,10 @@ import OrderDetailsOptions from 'OrderDetailsOptions'
 import {
   UPDATE_USER
 } from '../../graphql/mutations'
-
-const GridRow = props => (
-  <Grid container item direction={'row'} className={props.className}>{props.children}</Grid>
-)
-
-const GridColumn = ({ children, left, right, classes, container }) => (
-  <Grid
-    container={container}
-    item
-    xs={12}
-    sm={6}
-    className={
-      classnames({
-        [classes.left]: left,
-        [classes.right]: right
-      })
-    }>
-    {children}
-  </Grid>
-)
+import Button from 'antd/lib/button'
+import Row from 'antd/lib/row'
+import Col from 'antd/lib/col'
+import styles from './styles.scss'
 
 class EditEmailTextFieldWithMutations extends React.Component {
   updateUser = mutate => variables => mutate({
@@ -90,7 +68,6 @@ class OrderGrid extends React.Component {
   }
 
   render () {
-    const { classes, ...other } = this.props
     const {
       order,
       pending,
@@ -103,123 +80,103 @@ class OrderGrid extends React.Component {
     let contact = currentOrder?.contact
     let letter = currentOrder?.letter
     return (
-      <Grid container direction={'column'} spacing={40}>
-        <GridRow className={classnames(classes.grid, error.upload ? classes.error : '')}>
-          <GridColumn left classes={classes} container={!upload}>
+      <div className={styles.root}>
+        <Row className={classnames(styles.grid, error.upload ? styles.error : '')}>
+          <Col span={12} className={styles.left}>
             {upload ? (
-              <List className={classes.half}>
-                <ListItem>
-                  <ListItemIcon><AttachmentIcon /></ListItemIcon>
-                  <ListItemText
-                    inset
-                    primary={(upload.name) || ''}
-                  />
-                </ListItem>
-              </List>
+              <div className={styles.listItem}>
+                <div className={styles.listItemIcon}><AttachmentIcon /></div>
+                <div>{upload?.name || ''}</div>
+              </div>
             ) : (
               <OrderStepHeading step={1} label={'Add a document'} />
             )}
-          </GridColumn>
-          <GridColumn container classes={classes} right>
+          </Col>
+          <Col span={12} className={styles.right}>
             <Button
               onClick={() => this.props.handleOpen('dropzone')}
-              variant={'contained'}
-              color={'primary'}
               disabled={complete || pending}
+              type={'primary'}
             >
               Upload Documents
             </Button>
-          </GridColumn>
-        </GridRow>
-        <GridRow className={classnames(classes.grid, error.contact ? classes.error : '')}>
-          <GridColumn container={!(contact?.address?.name)} classes={classes} left>
-            {contact?.address?.name ? (<List className={classes.half}>
-              <ListItem>
-                <ListItemIcon><PersonIcon /></ListItemIcon>
-                <ListItemText
-                  inset
-                  primary={contact?.address?.name}
-                />
-              </ListItem>
-            </List>) : (
-              <OrderStepHeading step={2} label={'Add a shipping address'} />
+          </Col>
+        </Row>
+        <Row className={classnames(styles.grid, error.contact ? styles.error : '')}>
+          <Col span={12} className={styles.left}>
+            {contact?.address?.name ? (
+              <div className={styles.listItem}>
+                <div className={styles.listItemIcon}><PersonIcon /></div>
+                <div>{contact?.address?.name}</div>
+              </div>
+            ) : (<OrderStepHeading step={2} label={'Add a shipping address'} />
             )}
-          </GridColumn>
-          <GridColumn container classes={classes} right>
+          </Col>
+          <Col span={12} className={styles.right}>
             <Button
               onClick={() => this.props.handleOpen('addressbook')}
-              variant={'contained'}
-              color={'primary'}
               disabled={complete || pending}
+              type={'primary'}
             >
               Add Recipient
             </Button>
-          </GridColumn>
-        </GridRow>
-        <GridRow className={classnames(classes.grid, error.card ? classes.error : '')}>
-          <GridColumn left classes={classes} container={!user?.cards?.length}>
+          </Col>
+        </Row>
+        <Row className={classnames(styles.grid, error.card ? styles.error : '')}>
+          <Col span={12} className={styles.left}>
             {user?.cards?.length
-              ? (<PaymentMethods {...other} />)
+              ? (<PaymentMethods {...this.props} />)
               : (<OrderStepHeading step={3} label={'Add a payment method'} />)}
-          </GridColumn>
-          <GridColumn container classes={classes} right>
+          </Col>
+          <Col span={12} className={styles.right}>
             <Button
-              variant={'contained'}
-              color={'primary'}
+              // variant={'contained'}
+              // color={'primary'}
               onClick={() => this.props.handleOpen('stripe')}
               disabled={complete || pending}
+              type={'primary'}
             >Add Card</Button>
-          </GridColumn>
-        </GridRow>
-        <GridRow className={classnames(classes.grid, error.card ? classes.error : '')}>
-          <GridColumn
-            classes={classes}
-            left
-            container
-          >
+          </Col>
+        </Row>
+        <Row className={classnames(styles.grid, error.card ? styles.error : '')}>
+          <Col span={12} className={styles.left}>
             <OrderStepHeading step={4} label={'Add an email address'} />
-          </GridColumn>
-          <GridColumn container classes={classes} right>
-            <EditEmailTextFieldWithMutations {...other} />
-          </GridColumn>
-        </GridRow>
-        <GridRow className={classes.grid}>
-          <Grid item xs={12}>
-            <OrderDetailsOptions {...other} />
-          </Grid>
-        </GridRow>
-        <GridRow className={classes.grid}>
+          </Col>
+          <Col span={12} className={styles.right}>
+            <EditEmailTextFieldWithMutations {...this.props} />
+          </Col>
+        </Row>
+        <Row className={styles.grid}>
+          <Col span={24}>
+            <OrderDetailsOptions {...this.props} />
+          </Col>
+        </Row>
+        <Row className={styles.grid}>
           {pending && <LinearProgress color={'primary'} />}
-          <Grid item xs={12} sm={6} className={classes.left}>
-            <FormControl required error={typeof error.terms !== 'undefined'} component={'fieldset'}>
-              <FormControlLabel
-                control={
-                  <Checkbox
-                    checked={this.props.accept}
-                    onChange={this.props.onCheckboxChange}
-                  />
-                }
-                label={<FormHelperText className={classes.formHelperText}><span>I accept the <a href='/terms'>terms and conditions</a></span></FormHelperText>}
-              />
-            </FormControl>
-          </Grid>
-          <Grid container item xs={12} sm={6} className={classes.right}>
+          <Col span={12} className={styles.left}>
+            <Checkbox
+              value={this.props.accept}
+              onChange={this.props.onCheckboxChange}
+            >
+              <span className={styles.checkboxTerms}>I accept the <a href='/terms'>terms and conditions</a></span>
+            </Checkbox>
+          </Col>
+          <Col span={12} className={styles.right}>
             <Quote
               currentOrder={currentOrder}
-              classes={classes}
+              styles={styles}
             />
             <Button
               onClick={this.props.preSubmit}
-              variant={'contained'}
-              color={'primary'}
               disabled={complete || pending}
+              type={'primary'}
             >
             Review & Submit
             </Button>
-          </Grid>
-        </GridRow>
+          </Col>
+        </Row>
         {letter && <OrderCard order={currentOrder} />}
-      </Grid>
+      </div>
     )
   }
 }

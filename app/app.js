@@ -18,6 +18,9 @@ import getToken from './lib/getToken'
 import { SnackbarProvider, withSnackbar } from 'notistack'
 import LoadingOverlay from './components/LoadingOverlay'
 import './styles/main.scss'
+import 'antd/dist/antd.css'
+// import './styles/antd.less'
+
 import gql from 'graphql-tag'
 
 const ORDER_QUERY = gql`

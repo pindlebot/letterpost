@@ -6,7 +6,6 @@ import { withStyles } from '@material-ui/core/styles'
 import Card from '@material-ui/core/Card'
 import CardContent from '@material-ui/core/CardContent'
 import CardMedia from '@material-ui/core/CardMedia'
-import Typography from '@material-ui/core/Typography'
 import classnames from 'classnames'
 import Stepper from '@material-ui/core/Stepper'
 import Step from '@material-ui/core/Step'
@@ -116,20 +115,20 @@ class OrderCard extends React.Component {
       <Card className={classes.card}>
         <div className={classnames(classes.row, classes.header)}>
           <div className={classes.detail}>
-            <Typography className={classes.uppercase}>Order Placed</Typography>
-            <Typography>{formatDate(letter.createdAt)}</Typography>
+            <div className={classes.uppercase}>Order Placed</div>
+            <div>{formatDate(letter.createdAt)}</div>
           </div>
           <div className={classes.detail}>
-            <Typography className={classes.uppercase}>Total</Typography>
-            <Typography>${(order.charge.amount / 100).toFixed(2)}</Typography>
+            <div className={classes.uppercase}>Total</div>
+            <div>${(order.charge.amount / 100).toFixed(2)}</div>
           </div>
           <div className={classes.detail}>
-            <Typography className={classes.uppercase}>Ship to</Typography>
-            <Typography>{order.contact.address.name}</Typography>
+            <div className={classes.uppercase}>Ship to</div>
+            <div>{order.contact.address.name}</div>
           </div>
           <div className={classes.detail}>
-            <Typography className={classes.uppercase}>Order ID</Typography>
-            <Typography>{order.id}</Typography>
+            <div className={classes.uppercase}>Order ID</div>
+            <div>{order.id}</div>
           </div>
         </div>
         <div className={classes.row}>
@@ -138,19 +137,19 @@ class OrderCard extends React.Component {
           </div>
           <CardContent className={classes.content}>
             <div className={classes.inline}>
-              <Typography className={classes.label}>File</Typography>
+              <div className={classes.label}>File</div>
               <AttachmentIcon className={classes.icon} />
-              <Typography>{upload.name}</Typography>
+              <div>{upload.name}</div>
             </div>
             <div className={classes.inline}>
-              <Typography className={classes.label}>ETA</Typography>
+              <div className={classes.label}>ETA</div>
               <LocalShippingIcon className={classes.icon} />
-              <Typography>{letter.expectedDeliveryDate}</Typography>
+              <div>{letter.expectedDeliveryDate}</div>
             </div>
             <div className={classes.inline}>
-              <Typography className={classes.label}>Tracking</Typography>
+              <div className={classes.label}>Tracking</div>
               <EmailIcon className={classes.icon} />
-              <Typography>{letter.trackingNumber || 'pending'}</Typography>
+              <div>{letter.trackingNumber || 'pending'}</div>
             </div>
           </CardContent>
           <Stepper activeStep={event.step} orientation={'vertical'}>

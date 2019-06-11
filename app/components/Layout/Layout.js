@@ -4,18 +4,9 @@ import withStyles from '@material-ui/core/styles/withStyles'
 import Header from '../LayoutHeader'
 import getToken from '../../lib/getToken'
 import Footer from '../Footer'
+import AntLayout from 'antd/lib/layout'
+import styles from './styles.scss'
 
-const styles = {
-  main: {
-    backgroundColor: '#fafafa',
-    paddingTop: 40,
-    minHeight: 'calc(100vh - 245px)',
-    height: '100%',
-    boxSizing: 'border-box',
-    backgroundImage: 'radial-gradient(circle, #D7D7D7, #D7D7D7 1px, #FFF 1px, #FFF)',
-    backgroundSize: '28px 28px'
-  }
-}
 
 class Layout extends Component {
   signout = async () => {
@@ -31,17 +22,17 @@ class Layout extends Component {
     const { user } = this.props
     const logged = user?.data?.user?.role === 'USER'
     return (
-      <div>
+      <AntLayout>
         <Header
           {...other}
           signout={this.signout}
           logged={logged}
         />
-        <div className={classes.main}>
+        <AntLayout.Content className={styles.root} style={{ padding: '24px 50px' }}>
           {this.props.children}
-        </div>
+        </AntLayout.Content>
         <Footer {...other} />
-      </div>
+      </AntLayout>
     )
   }
 }

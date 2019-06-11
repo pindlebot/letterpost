@@ -1,20 +1,14 @@
 import React from 'react'
 import PropTypes from 'prop-types'
-import { withStyles } from '@material-ui/core/styles'
-import Dialog from '@material-ui/core/Dialog'
-import DialogActions from '@material-ui/core/DialogActions'
-import DialogTitle from '@material-ui/core/DialogTitle'
-import DialogContentText from '@material-ui/core/DialogContentText'
-import DialogContent from '@material-ui/core/DialogContent'
 import { graphql, compose, Mutation, Query } from 'react-apollo'
 import ContactList from '../ContactList'
 import RecipientForm from '../RecipientForm'
-import Button from '@material-ui/core/Button'
 import AddIcon from '@material-ui/icons/Add'
 import { CONTACTS_QUERY, ORDER_CONTACTS_QUERY } from '../../graphql/queries'
 import { CREATE_CONTACT, UPDATE_CONTACT } from '../../graphql/mutations'
-import formStyles from './styles'
-import Grid from '@material-ui/core/Grid'
+import Modal from 'antd/lib/modal'
+import styles from './styles.scss'
+import Button from 'antd/lib/button'
 
 const ID = () => {
   return '_' + Math.random().toString(36).substr(2, 9)
@@ -155,50 +149,38 @@ class RecipientFormDialog extends React.Component {
               <Mutation mutation={CREATE_CONTACT}>
                 {(createContact) => {
                   return (
-                    <Dialog
-                      open={this.props.open}
-                      onClose={this.handleClose}
-                      fullScreen={window.innerWidth < 481}
-                      maxWidth={false}
-                      PaperProps={{
-                        classes: {
-                          root: this.props.classes.paper
-                        }
-                      }}
-                    >
-                      <DialogTitle>
-                        Shipping Address
-                      </DialogTitle>
-                      <DialogContent style={{ flexGrow: 1 }}>
-                        <Grid container spacing={24}>
-                          <Grid item xs={12}>
-                            <DialogContentText>
-                              Where should we send this order?
-                            </DialogContentText>
-                          </Grid>
-                          <Grid item xs={12} sm={6}>
-                            <ContactList
-                              selectContact={this.selectContact}
-                              order={order}
-                              client={this.props.client}
-                            />
-                          </Grid>
-                          <Grid item xs={12} sm={6}>
-                            <RecipientForm
-                              user={this.props.user}
-                              client={this.props.client}
-                              order={order}
-                            />
-                          </Grid>
-                        </Grid>
-                      </DialogContent>
-                      <DialogActions className={classes.actions}>
+                    <Modal
+                      visible={this.props.open}
+                      width={800}
+                      title={'Shipping Address'}
+                      onOK={this.handleClose}
+                      onCancel={this.handleClose}
+                      footer={[
                         <Button onClick={this.createContact(createContact)}>
-                          <AddIcon /> Add A Contact
-                        </Button>
+                          Add A Contact
+                        </Button>,
                         <Button onClick={this.handleClose}>Done</Button>
-                      </DialogActions>
-                    </Dialog>
+                      ]}
+                      className={styles.modal}
+                    >
+                      <div className={styles.row}>Where should we send this order?</div>
+                      <div className={styles.row}>
+                        <div className={styles.column}>
+                          <ContactList
+                            selectContact={this.selectContact}
+                            order={order}
+                            client={this.props.client}
+                          />
+                        </div>
+                        <div className={styles.column}>
+                          <RecipientForm
+                            user={this.props.user}
+                            client={this.props.client}
+                            order={order}
+                          />
+                        </div>
+                      </div>
+                    </Modal>
                   )
                 }}
               </Mutation>
@@ -210,4 +192,4 @@ class RecipientFormDialog extends React.Component {
   }
 }
 
-export default withStyles(formStyles)(RecipientFormDialog)
+export default RecipientFormDialog

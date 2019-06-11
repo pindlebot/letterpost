@@ -1,0 +1,27 @@
+.root {
+  flex-basis: 100%;
+  // background: theme.palette.background.paper
+}
+
+.row {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+}
+
+.item {
+  flex-basis: 50%;
+}
+
+.right {
+  display: flex;
+  justify-content: flex-end;
+}
+
+.listItemMeta :global(.ant-list-item-meta-title) {
+  color: #fff;
+}
+
+.listItem:global(.ant-list-item) {
+  border-bottom: 1px solid #9193A3;
+}

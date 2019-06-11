@@ -1,17 +1,15 @@
 import React from 'react'
 import PropTypes from 'prop-types'
 import { withApollo, compose, Mutation, Query } from 'react-apollo'
-import { withStyles } from '@material-ui/core/styles'
 import Layout from 'Layout'
 import {
   UPDATE_ORDER,
   CREATE_LETTER,
-  CREATE_CHARGE,
-  UPDATE_USER
+  CREATE_CHARGE
 } from '../../graphql/mutations'
 import 'isomorphic-fetch'
 import { withRouter } from 'react-router-dom'
-import styles from './styles'
+import styles from './styles.scss'
 import { ORDER_QUERY, USER_QUERY, CHECKOUT_ORDER_QUERY } from '../../graphql/queries'
 import OrderDialogs from 'OrderDialogs'
 import { OrderPropType, UserPropType } from '../../lib/propTypes'
@@ -158,7 +156,7 @@ class Order extends React.Component {
           order={this.props.order}
           client={this.props.client}
         />
-        <div className={classes.main}>
+        <div className={styles.main}>
           <OrderGrid
             {...this.props}
             handleOpen={open => {
@@ -191,6 +189,7 @@ class OrderMutations extends React.Component {
             window.localStorage.removeItem('token')
             this.props.history.push('/')
           }
+      
           if (user.loading) return (<LoadingOverlay />)
           return (
             <Query query={CHECKOUT_ORDER_QUERY} variables={params}>
@@ -237,6 +236,5 @@ class OrderMutations extends React.Component {
 
 export default compose(
   withRouter,
-  withApollo,
-  withStyles(styles)
+  withApollo
 )(OrderMutations)

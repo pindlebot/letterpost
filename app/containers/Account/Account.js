@@ -1,33 +1,25 @@
 import React from 'react'
 import PropTypes from 'prop-types'
 import { withApollo, compose, Mutation, Query } from 'react-apollo'
-import gql from 'graphql-tag'
 import Layout from 'Layout'
 import { withStyles } from '@material-ui/core/styles'
-import Typography from '@material-ui/core/Typography'
 import { withRouter } from 'react-router-dom'
 import EditEmailTextField from 'EditEmailTextField'
-import FormControl from '@material-ui/core/FormControl'
-import InputLabel from '@material-ui/core/InputLabel'
-import Input from '@material-ui/core/Input'
-import InputAdornment from '@material-ui/core/InputAdornment'
-import IconButton from '@material-ui/core/IconButton'
-import EditIcon from '@material-ui/icons/Edit'
-import SaveIcon from '@material-ui/icons/Save'
 import { ORDERS_QUERY, USER_QUERY } from '../../graphql/queries'
-import { UPDATE_USER, DELETE_USER } from '../../graphql/mutations'
+import { UPDATE_USER } from '../../graphql/mutations'
 import OrderCard from 'OrderCard'
 import EditPasswordTextField from 'EditPasswordTextField'
-import Grid from '@material-ui/core/Grid'
 import { connect } from 'react-redux'
 import { setGraphQLErrors } from '../../lib/redux'
 import { push } from 'connected-react-router'
-import Button from '@material-ui/core/Button'
+import Button from 'antd/lib/button'
 import DeleteAccountConfirmationDialog from 'DeleteAccountConfirmationDialog'
+import Col from 'antd/lib/Col'
+import Row from 'antd/lib/Row'
 
 const styles = theme => ({
   h1: {
-    color: 'rgba(23,42,58,1)',
+    color: '#fff',
     fontWeight: 700
   },
   main: {
@@ -40,13 +32,15 @@ const styles = theme => ({
     }
   },
   grid: {
-    backgroundColor: '#fff',
     borderRadius: 3,
     marginBottom: 24,
     justifyContent: 'space-between',
     alignItems: 'center',
-    boxShadow: '0 1px 3px 0 #e6ebf1',
-    transition: 'box-shadow 150ms ease'
+    boxShadow: '0 12px 40px rgba(0, 0, 0, 0.12)',
+    transition: 'box-shadow 150ms ease',
+    backgroundColor: '#3C4055',
+    backgroundImage: 'linear-gradient(295.7deg, #3B3F55 0.49%, #33334C 95.3%)',
+    padding: 30
   },
   left: {
     justifyContent: 'flex-start',
@@ -96,70 +90,11 @@ const styles = theme => ({
     '& > div:first-child': {
       marginRight: 12
     }
+  },
+  h4: {
+    color: '#fff'
   }
 })
-
-class NameTextField extends React.Component {
-  static propTypes = {
-    client: PropTypes.object.isRequired,
-    user: PropTypes.object.isRequired
-  }
-  state = {
-    name: this.props.user.data.user.name || '',
-    disabled: Boolean(this.props.user.data.user.name)
-  }
-
-  onChange = ({ currentTarget }) => {
-    this.setState({ name: currentTarget.value })
-  }
-
-  toggleEdit = () => {
-    let { disabled, name } = this.state
-    let { user: { data: { user } } } = this.props
-    if (!disabled) {
-      this.props.updateUser({
-        input: {
-          id: user.id,
-          name: name
-        }
-      })
-    }
-    this.setState(prevState => ({
-      disabled: !prevState.disabled
-    }))
-  }
-
-  render () {
-    const { classes } = this.props
-    return (
-      <FormControl fullWidth>
-        <InputLabel htmlFor='adornment-email-address'>
-          Name
-        </InputLabel>
-        <Input
-          id='adornment-name'
-          type={'text'}
-          value={this.state.name}
-          onChange={this.onChange}
-          disabled={this.state.disabled}
-          endAdornment={
-            <InputAdornment position='end'>
-              <IconButton
-                aria-label={'Edit'}
-                onClick={this.toggleEdit}
-                onMouseDown={evt => {
-                  evt.preventDefault()
-                }}
-              >
-                {this.state.disabled ? <EditIcon /> : <SaveIcon />}
-              </IconButton>
-            </InputAdornment>
-          }
-        />
-      </FormControl>
-    )
-  }
-}
 
 class Account extends React.Component {
   static propTypes = {
@@ -207,50 +142,25 @@ class Account extends React.Component {
                 if (orders.loading) return false
                 return (
                   <Layout {...other}>
-                    <DeleteAccountConfirmationDialog
-                      handleClose={this.handleDialogClose}
-                      open={this.state.dialog === 'DELETE_ACCOUNT'}
-                      user={user}
-                    />
                     <div className={classes.main}>
-                      <Grid
-                        container
-                        direction={'column'}
-                        spacing={40}
+                      <Row
+                        className={classes.grid}
+                        type={'flex'}
                       >
-                        <Grid
-                          container
-                          item
-                          direction={'row'}
-                          className={classes.grid}
+                        <Col
+                          className={classes.left}
+                          span={8}
                         >
-                          <Grid
-                            item
-                            xs={12}
-                            sm={3}
-                            className={classes.left}
-                            container
-                          >
-                            <Typography
-                              variant='body1'
-                              align='left'
-                              className={classes.h1}
-                              gutterBottom
-                            >
-                              Account
-                            </Typography>
-                          </Grid>
-                          <Grid
-                            item
-                            xs={12}
-                            sm={9}
-                            className={classes.right}
-                            container
-                            spacing={24}
-                            direction={'row'}
-                            wrap={'wrap'}
-                          >
-                            <Grid item sm={6} xs={12}>
+                          <div className={classes.h1}>
+                            Account
+                          </div>
+                        </Col>
+                        <Col
+                          className={classes.right}
+                          span={16}
+                        >
+                          <Row gutter={12} type={'flex'}>
+                            <Col span={12}>
                               <EditEmailTextField
                                 user={this.props.user}
                                 client={this.props.client}
@@ -258,8 +168,8 @@ class Account extends React.Component {
                                 loading={loading}
                                 setGraphQLErrors={this.props.setGraphQLErrors}
                               />
-                            </Grid>
-                            <Grid item sm={6} xs={12}>
+                            </Col>
+                            <Col span={12}>
                               <EditPasswordTextField
                                 user={this.props.user}
                                 client={this.props.client}
@@ -270,47 +180,36 @@ class Account extends React.Component {
                                 graphQLErrors={this.props.root.graphQLErrors}
                                 signin={this.props.signin}
                               />
-                            </Grid>
-                          </Grid>
-                        </Grid>
-                        <Grid
-                          container
-                          item
-                          direction={'row'}
-                          className={classes.grid}
+                            </Col>
+                          </Row>
+                        </Col>
+                      </Row>
+                      <Row
+                        className={classes.grid}
+                        type={'flex'}
+                      >
+                        <Col
+                          span={6}
+                          className={classes.left}
                         >
-                          <Grid
-                            item
-                            xs={12}
-                            sm={3}
-                            className={classes.left}
-                            container
-                          >
-                            <Typography
-                              variant='body1'
-                              align='left'
-                              className={classes.h4}
-                              gutterBottom
-                            >
-                              Danger Zone
-                            </Typography>
-                          </Grid>
-                          <Grid
-                            item
-                            xs={12}
-                            sm={9}
-                            className={classes.right}
-                            container
-                            justify={'flex-end'}
-                          >
-                            <Button
-                              disabled={this.props.user.data.user.role !== 'USER'}
-                              onClick={() => {
-                                this.setState({ dialog: 'DELETE_ACCOUNT' })
-                              }}>Delete Account</Button>
-                          </Grid>
-                        </Grid>
-                      </Grid>
+                          <div className={classes.h4}>
+                            Danger Zone
+                          </div>
+                        </Col>
+                        <Col
+                          span={18}
+                          className={classes.right}
+                        >
+                          <Row justify={'end'} type={'flex'}>
+                            <DeleteAccountConfirmationDialog
+                              handleClose={this.handleDialogClose}
+                              open={this.state.dialog === 'DELETE_ACCOUNT'}
+                              user={user}
+                            />
+                            
+                          </Row>
+                        </Col>
+                      </Row>
                       {orders.data.orders.map(order =>
                         <OrderCard order={order} key={order.id} />
                       )}

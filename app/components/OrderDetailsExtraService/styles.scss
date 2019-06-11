@@ -1,0 +1,39 @@
+@import '../../styles/theme.scss';
+
+.toggleButton {
+  box-shadow: none;
+}
+
+.formLabel {
+  height: 48;
+  line-height: 48px;
+  font-size: 14px;
+  font-weight: 500;
+  color: #586069;
+}
+
+.mailType {
+  color: #fff;
+  margin-bottom: 15px;
+}
+
+.root {
+  :global(.ant-radio-button-wrapper) {
+    background-color: $darkIndigo;
+    color: $wintergreen;
+    border-color: transparent;
+    border: 1px solid transparent;
+  }
+  :global(.ant-radio-button-wrapper:hover) {
+    color: $antiFlashWhite;
+  }
+  :global(.ant-radio-button-wrapper:before) {
+    background-color: transparent;
+  }
+
+  :global(.ant-radio-group-solid .ant-radio-button-wrapper-checked:not(.ant-radio-button-wrapper-disabled)) {
+    background-color: rgba($green, 0.1);
+    color: $green;
+    border-color: transparent;
+  }
+}

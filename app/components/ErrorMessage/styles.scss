@@ -1,0 +1,24 @@
+.container {
+  padding: 20px;
+  border-radius: 4px;
+  background-color: #d73a49;
+  color: #fff;
+  max-width: 600px;
+  min-width: 400px;
+  margin: 0 auto 0 auto;
+}
+
+.row {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.type {
+  color: #fff;
+}
+
+.icon {
+  color: #fff;
+}

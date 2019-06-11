@@ -1,0 +1,15 @@
+.menu {
+  width: 300px;
+}
+
+.item {
+  padding: 16px;
+  box-shadow: none;
+  background-color: #fff;
+}
+
+.root {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+}

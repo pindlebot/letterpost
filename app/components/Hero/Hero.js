@@ -1,11 +1,10 @@
 import React from 'react'
 import PropTypes from 'prop-types'
 import { withStyles } from '@material-ui/core/styles'
-import Button from '@material-ui/core/Button'
-import Typography from '@material-ui/core/Typography'
 import { connect } from 'react-redux'
 import { push } from 'connected-react-router'
 import { compose } from 'react-apollo'
+import Button from 'antd/lib/button'
 
 const styles = {
   title: {
@@ -13,14 +12,24 @@ const styles = {
     fontSize: 14
   },
   button: {
-    maxWidth: '160px'
+    maxWidth: '160px',
+    backgroundColor: '#06CB6D',
+    borderColor: '#06CB6D',
+    color: '#fff',
+    '&:hover': {
+      color: '#fff',
+      backgroundColor: '#06B964',
+      borderColor: '#06B964'
+    }
   },
   typography: {
-    color: 'rgba(23,42,58,1)',
-    fontWeight: 400
+    color: '#fff',
+    fontWeight: 400,
+    fontSize: 20
   },
   h1: {
-    color: '#123',
+    color: '#fff',
+    fontSize: 28,
     fontWeight: 700
   },
   column: {
@@ -56,24 +65,17 @@ const Hero = (props) => {
       <div className={classes.row}>
         <div className={classes.column}>
           <div>
-            <Typography
-              variant='h3'
-              className={classes.h1}
-              gutterBottom
-            >
+            <h3 className={classes.h1}>
                 Print Documents to Your Mailbox
-            </Typography>
-            <Typography
-              variant='h4'
-              className={classes.typography}
-            >
+            </h3>
+            <h4 className={classes.typography}>
                 Upload documents and get them in the mail a few days later.
-            </Typography>
+            </h4>
           </div>
           <Button
-            variant={'contained'}
+            // variant={'contained'}
             className={props.classes.button}
-            color={'primary'}
+            // color={'primary'}
             onClick={() => {
               props.clickCTA()
             }}

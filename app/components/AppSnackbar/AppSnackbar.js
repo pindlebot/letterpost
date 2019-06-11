@@ -1,27 +1,22 @@
 import React from 'react'
-import Snackbar from '@material-ui/core/Snackbar'
 import { connect } from 'react-redux'
+import notification from 'antd/lib/notification'
 
 class ValidationErrorsSnackbar extends React.Component {
-  render () {
-    const { snackbar, validationErrors, type } = this.props.root
+  componentDidUpdate (prevProps) {
+    const { validationErrors } = this.props
     const keys = Object.keys(validationErrors)
-    return keys.map(key => (
-      <Snackbar
-        anchorOrigin={{
-          vertical: 'bottom',
-          horizontal: 'left'
-        }}
-        open={Boolean(snackbar?.show)}
-        autoHideDuration={6000}
-        onClose={this.props.handleClose}
-        ContentProps={{
-          'aria-describedby': 'message-id'
-        }}
-        key={key}
-        message={<span id='message-id'>{validationErrors[key].message}</span>}
-      />
-    ))
+    if (keys.length !== Object.keys(prevProps.validationErrors).length) {
+      keys.forEach(key => {
+        notification.open({
+          message: validationErrors[key].message,
+          description: ''
+        })
+      })
+    }
+  }
+  render () {
+    return null
   }
 }
 

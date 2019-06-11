@@ -3,12 +3,6 @@
 import React from 'react'
 import PropTypes from 'prop-types'
 import { withStyles } from '@material-ui/core/styles'
-import List from '@material-ui/core/List'
-import ListItem from '@material-ui/core/ListItem'
-import ListItemIcon from '@material-ui/core/ListItemIcon'
-import ListItemSecondaryAction from '@material-ui/core/ListItemSecondaryAction'
-import ListItemText from '@material-ui/core/ListItemText'
-import ListSubheader from '@material-ui/core/ListSubheader'
 import OrderDetailsToggle from '../OrderDetailsToggle'
 import InvertColors from '@material-ui/icons/InvertColors'
 import Print from '@material-ui/icons/Print'
@@ -18,7 +12,15 @@ import { ORDER_OPTIONS_QUERY } from '../../graphql/queries'
 import MailIcon from '@material-ui/icons/Mail'
 import OrderDetailsExtraService from '../OrderDetailsExtraService'
 import classnames from 'classnames'
-import styles from './styles'
+import styles from './styles.scss'
+
+import List from 'antd/lib/List'
+
+const icons = {
+  color: <InvertColors />,
+  doubleSided: <Print />,
+  mail: <MailIcon />
+}
 
 class OrderDetailsOptions extends React.Component {
   static defaultProps = {}
@@ -53,13 +55,12 @@ class OrderDetailsOptions extends React.Component {
     }
   })
 
-  handleAlignment = (mutate, data) => (evt, alignment) => {
-    console.log({ data })
+  handleAlignment = (mutate, data) => (evt) => {
     return mutate({
       variables: {
         input: {
           id: data?.currentOrder?.options?.id,
-          extraService: alignment
+          extraService: evt.target.value
         }
       }
     })
@@ -72,63 +73,54 @@ class OrderDetailsOptions extends React.Component {
 
     const { classes, ...rest } = this.props
     const currentOrder = order?.data?.currentOrder
+    const dataSource = [{
+      title: 'Print in color',
+      icon: icons.color,
+      name: 'color',
+      value: currentOrder?.options.color
+    }, {
+      title: 'Double-sided?',
+      icon: icons.doubleSided,
+      name: 'doubleSided',
+      value: currentOrder?.options.doubleSided
+    }, {
+      title: 'USPS First Class?',
+      icon: icons.mail,
+      name: 'mailType',
+      value: currentOrder?.options.mailType
+    }]
+   
+    console.log(dataSource)
     return (
       <Mutation mutation={UPDATE_OPTIONS}>
         {(mutate, { error, data, loading }) => (
           <Query query={ORDER_OPTIONS_QUERY} variables={{ id: currentOrder?.id }} skip={!currentOrder?.id}>
             {({ data }) => (
               <React.Fragment>
-                <div className={classes.row}>
-                  <div className={classes.item}>
-                    <List subheader={<ListSubheader>Options</ListSubheader>}>
-                      <ListItem>
-                        <ListItemIcon>
-                          <InvertColors />
-                        </ListItemIcon>
-                        <ListItemText primary='Print in color' />
-                        <ListItemSecondaryAction>
+                <div className={styles.row}>
+                  <div className={styles.item}>
+                    <List
+                      title={'Options'}
+                      dataSource={dataSource}
+                      renderItem={({ title, icon, name, value }) => (
+                        <List.Item className={styles.listItem}>
+                          <List.Item.Meta
+                            title={title}
+                            className={styles.listItemMeta}
+                          >
+                          </List.Item.Meta>
                           <OrderDetailsToggle
-                            checked={data?.currentOrder?.options?.color}
-                            label={'Print in color'}
-                            name='color'
+                            checked={Boolean(data?.currentOrder?.options[name])}
+                            label={title}
+                            name={name}
                             updateOptions={this.updateOptions(mutate, data)}
                             options={data?.currentOrder?.options}
                           />
-                        </ListItemSecondaryAction>
-                      </ListItem>
-                      <ListItem>
-                        <ListItemIcon>
-                          <Print />
-                        </ListItemIcon>
-                        <ListItemText primary='Double-sided?' />
-                        <ListItemSecondaryAction>
-                          <OrderDetailsToggle
-                            checked={data?.currentOrder?.options?.doubleSided}
-                            label={'Double-sided?'}
-                            name='doubleSided'
-                            updateOptions={this.updateOptions(mutate, data)}
-                            options={data?.currentOrder?.options}
-                          />
-                        </ListItemSecondaryAction>
-                      </ListItem>
-                      <ListItem>
-                        <ListItemIcon>
-                          <MailIcon />
-                        </ListItemIcon>
-                        <ListItemText primary='USPS First Class' />
-                        <ListItemSecondaryAction>
-                          <OrderDetailsToggle
-                            checked={data?.currentOrder?.options?.mailType === 'USPS_FIRST_CLASS'}
-                            label={'USPS First Class?'}
-                            name='mailType'
-                            updateOptions={this.updateOptions(mutate, data)}
-                            options={data?.currentOrder?.options}
-                          />
-                        </ListItemSecondaryAction>
-                      </ListItem>
-                    </List>
+                        </List.Item>
+                      )}
+                    />
                   </div>
-                  <div className={classnames(classes.item, classes.right)}>
+                  <div className={classnames(styles.item, styles.right)}>
                     <OrderDetailsExtraService
                       alignment={data?.currentOrder?.options?.extraService}
                       handleAlignment={this.handleAlignment(mutate, data)}
@@ -146,8 +138,7 @@ class OrderDetailsOptions extends React.Component {
 }
 
 OrderDetailsOptions.propTypes = {
-  classes: PropTypes.object.isRequired,
   order: PropTypes.object
 }
 
-export default withStyles(styles)(OrderDetailsOptions)
+export default OrderDetailsOptions

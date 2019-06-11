@@ -1,64 +1,17 @@
 // @flow weak
 import React from 'react'
 import PropTypes from 'prop-types'
-import { withStyles } from '@material-ui/core/styles'
-import Checkbox from '@material-ui/core/Checkbox'
-import List from '@material-ui/core/List'
-import ListItem from '@material-ui/core/ListItem'
-import ListItemSecondaryAction from '@material-ui/core/ListItemSecondaryAction'
-import ListItemText from '@material-ui/core/ListItemText'
-import Typography from '@material-ui/core/Typography'
 import { Mutation } from 'react-apollo'
 import 'isomorphic-fetch'
 import {
   DELETE_UPLOAD
 } from '../../graphql/mutations'
 import { UPLOADS_QUERY, ORDER_QUERY } from '../../graphql/queries'
-import Grid from '@material-ui/core/Grid'
 import LinearProgress from '@material-ui/core/LinearProgress'
-import DeleteIcon from '@material-ui/icons/Delete'
-import IconButton from '@material-ui/core/IconButton'
-
-const styles = theme => ({
-  list: {
-    [theme.breakpoints.up('sm')]: {
-      height: 'calc(80vh - 68px - 53px - 24px - 42px)'
-    },
-    [theme.breakpoints.down('sm')]: {
-      marginBottom: 24
-    }
-  },
-  row: {
-
-  }
-})
-
-function UploadListItemText ({ upload, color }) {
-  return (
-    <ListItemText
-      key={`list_item_text_${upload.id}`}
-      primary={<Typography color={color}>{upload.name}</Typography>}
-      secondary={`${upload.size / 1e6}mb`}
-    />
-  )
-}
-
-const listItemStyles = {
-  icon: {
-    color: '#757575',
-    '&:hover': {
-      color: '#616161',
-      backgroundColor: 'transparent'
-    }
-  },
-  progress: {
-    position: 'absolute',
-    height: '10px',
-    width: '100%',
-    bottom: '8px',
-    left: '0px'
-  }
-}
+import styles from './styles.scss'
+import List from 'antd/lib/list'
+import Checkbox from 'antd/lib/checkbox'
+import Button from 'antd/lib/button'
 
 const formatFileSize = ({ size }) => {
   return size > 1e6
@@ -66,44 +19,40 @@ const formatFileSize = ({ size }) => {
     : `${Math.round(size / 1e3)} kb`
 }
 
-const UploadListItem = withStyles(listItemStyles)(({
+const UploadListItem = ({
   upload,
   color,
   handleClick,
   isChecked,
-  deleteUpload,
-  classes
+  deleteUpload
 }) => {
   return (
-    <ListItem dense button onClick={() => handleClick(upload)}>
-      <Checkbox checked={isChecked(upload)} />
-      <ListItemText
-        primary={<Typography color={color}>{upload.name}</Typography>}
-        secondary={formatFileSize(upload)}
-      />
-      <ListItemSecondaryAction>
-        {upload.status === 'DONE' && (
-          <IconButton
-            aria-label='Delete'
-            onClick={() => deleteUpload({ id: upload.id })}
-            className={classes.icon}
-          >
-            <DeleteIcon />
-          </IconButton>
-        )}
-      </ListItemSecondaryAction>
+    <List.Item onClick={() => handleClick(upload)} className={styles.listItem}>
+      <Checkbox value={isChecked(upload)} className={styles.checkbox} />
+      <div className={styles.listItemTitle}>
+        <div>{upload.name}</div>
+        <div>{formatFileSize(upload)}</div>
+      </div>
+      {upload.status === 'DONE' && (
+        <Button
+          aria-label='Delete'
+          onClick={() => deleteUpload({ id: upload.id })}
+          className={styles.icon}
+          shape={'circle'}
+          icon={'delete'}
+        />
+      )}
       {upload.status !== 'DONE' && (
-        <div className={classes.progress}>
+        <div className={styles.progress}>
           <LinearProgress />
         </div>
       )}
-    </ListItem>
+    </List.Item>
   )
-})
+}
 
 class UploadList extends React.Component {
   static propTypes = {
-    classes: PropTypes.object.isRequired,
     order: PropTypes.object.isRequired,
     client: PropTypes.object.isRequired,
     uploads: PropTypes.object.isRequired
@@ -111,6 +60,10 @@ class UploadList extends React.Component {
 
   handleClick = (upload) => {
     const { order: { data: { currentOrder } } } = this.props
+    console.log({
+      currentOrder,
+      upload
+    })
     return this.props.client.writeQuery({
       query: ORDER_QUERY,
       data: {
@@ -151,15 +104,17 @@ class UploadList extends React.Component {
   })
 
   render () {
-    const { classes, uploads } = this.props
+    const { uploads } = this.props
     if (uploads.loading) return false
     const color = 'default'
     return (
       <Mutation mutation={DELETE_UPLOAD}>
         {(mutate) => {
           return (
-            <List className={classes.list} disablePadding>
-              {(uploads?.data?.uploads || []).map(upload =>
+            <List
+              className={styles.list}
+              dataSource={uploads?.data?.uploads}
+              renderItem={(upload) => (
                 <UploadListItem
                   key={upload.id}
                   upload={upload}
@@ -169,7 +124,7 @@ class UploadList extends React.Component {
                   deleteUpload={this.deleteUpload({ mutate })}
                 />
               )}
-            </List>
+            />
           )
         }}
       </Mutation>
@@ -177,4 +132,4 @@ class UploadList extends React.Component {
   }
 }
 
-export default withStyles(styles)(UploadList)
+export default UploadList

@@ -1,9 +1,4 @@
 import React from 'react'
-import FormControl from '@material-ui/core/FormControl'
-import InputLabel from '@material-ui/core/InputLabel'
-import Input from '@material-ui/core/Input'
-import InputAdornment from '@material-ui/core/InputAdornment'
-import IconButton from '@material-ui/core/IconButton'
 import EditIcon from '@material-ui/icons/Edit'
 import SaveIcon from '@material-ui/icons/Save'
 import classnames from 'classnames'
@@ -17,7 +12,9 @@ import { connect } from 'react-redux'
 import { setValidationError, clearValidationError } from '../../lib/redux'
 import isEmail from '../../lib/isEmail'
 import ErrorIcon from '@material-ui/icons/Error'
-import { push } from 'connected-react-router'
+import Button from 'antd/lib/button'
+import Input from 'antd/lib/input'
+import Icon from 'antd/lib/icon'
 
 const styles = theme => ({
   root: {
@@ -51,21 +48,30 @@ class EditEmailTextField extends React.Component {
 
   state = {
     disabled: true,
-    emailAddress: '',
-    inUse: true
+    emailAddress: ''
   }
 
-  componentDidUpdate (prevProps) {
-    const emailAddress = this.props?.user?.data?.user?.emailAddress
-    if (this.state.emailAddress) return
-    if (!emailAddress) return
-
-    this.setState({
-      disabled: Boolean(emailAddress),
-      emailAddress: emailAddress,
-      inUse: true
-    })
+  static getDerivedStateFromProps (nextProps, nextState) {
+    if (nextState.emailAddress) return null
+    const { user: { data } } = nextProps
+    const emailAddress = data?.user?.emailAddress || ''
+    return {
+      emailAddress,
+      disabled: Boolean(emailAddress)
+    }
   }
+
+  // componentDidUpdate (prevProps) {
+  //   const emailAddress = this.props?.user?.data?.user?.emailAddress
+  //   if (this.state.emailAddress) return
+  //   if (!emailAddress) return
+
+  //   this.setState({
+  //     disabled: Boolean(emailAddress),
+  //     emailAddress: emailAddress,
+  //     inUse: true
+  //   })
+  // }
 
   debounced = debounce(async (emailAddress, { mutate }) => {
     const { root: { validationErrors } } = this.props
@@ -146,27 +152,23 @@ class EditEmailTextField extends React.Component {
     const { root: { validationErrors } } = this.props
     const hasErrors = validationErrors.hasOwnProperty('EditEmailTextField')
     if (!emailAddress) return false
+    const iconProps = {
+      onClick: this.toggleEdit({ mutate }),
+      onMouseDown: evt => {
+        evt.preventDefault()
+      }
+    }
     return (
-      <InputAdornment position='end'>
+      <div>
         {hasErrors
-          ? <IconButton><ErrorIcon /></IconButton>
+          ? <Icon type={'error'} {...iconProps} />
           : this.props.loading || loading
             ? <CircularProgress />
-            : (
-              <IconButton
-                aria-label={'Edit'}
-                onClick={this.toggleEdit({ mutate })}
-                onMouseDown={evt => {
-                  evt.preventDefault()
-                }}
-              >{this.state.disabled
-                  ? <EditIcon />
-                  : <SaveIcon />
-                }
-              </IconButton>
-            )
+            : this.state.disabled
+              ? <Icon type={'edit'} {...iconProps} />
+              : <Icon type={'save'} {...iconProps} />
         }
-      </InputAdornment>
+      </div>
     )
   }
 
@@ -177,7 +179,7 @@ class EditEmailTextField extends React.Component {
       }
       return { disabled: false }
     }, () => {
-      this.ref.focus()
+      // this.ref.focus()
     })
   }
 
@@ -190,33 +192,28 @@ class EditEmailTextField extends React.Component {
         {(mutate, { loading, data }) => {
           return (
             <div onClick={this.handleClick} style={{width: '100%'}}>
-              <FormControl
-                fullWidth
-                error={invalid}
-              >
-                <Input
-                  id='adornment-email-address'
-                  type={'text'}
-                  value={emailAddress}
-                  onChange={this.onChange(mutate)}
-                  disabled={this.state.disabled}
-                  disableUnderline
-                  endAdornment={this.renderAdornment(mutate, { loading })}
-                  inputRef={ref => {
-                    this.ref = ref
-                  }}
-                  placeholder={'Email address'}
-                />
-                {this.state.disabled && (
-                  <div style={{
-                    position: 'absolute',
-                    left: 0,
-                    right: 0,
-                    top: 0,
-                    bottom: 0
-                  }} />
-                )}
-              </FormControl>
+              <Input
+                type={'text'}
+                value={emailAddress}
+                onChange={this.onChange(mutate)}
+                disabled={this.state.disabled}
+                placeholder={'Email address'}
+                suffix={this.renderAdornment(mutate, { loading })}
+                style={{
+                  color: '#fff',
+                  width: '100%',
+                  borderColor: '#42B684'
+                }}
+              />
+              {this.state.disabled && (
+                <div style={{
+                  position: 'absolute',
+                  left: 0,
+                  right: 0,
+                  top: 0,
+                  bottom: 0
+                }} />
+              )}
             </div>
           )
         }}

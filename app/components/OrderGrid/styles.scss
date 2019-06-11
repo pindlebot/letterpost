@@ -1,0 +1,124 @@
+@import '../../styles/theme.scss';
+
+.root {
+  flex-direction: column;
+  width: calc(100% + 40px);
+  margin: -20px;
+}
+
+.main {
+  max-width: 720;
+  width: 100%;
+  margin: 24px auto;
+  flex-grow: 1;
+  // [theme.breakpoints.down(sm)]: {
+  //   maxWidth: 90vw
+  // }
+}
+
+.column {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  width: 100%;
+  margin: 0 0 32px 0;
+  // background-color: #fff;
+  padding: 30px;
+  border-radius: 3px;
+  // border: 1px solid #F5F5F5;
+  box-sizing: border-box;
+}
+
+.grid {
+  border-radius: 3px;
+  margin-bottom: 24px;
+  justify-content: space-between;
+  align-items: center;
+  transition: box-shadow 150ms ease;
+  padding: 30px;
+  background-color: $indigo;
+  // background-image: linear-gradient(295.7deg, #3B3F55 0.49%, #33334C 95.3%);
+  opacity: 0.9;
+  box-shadow: 0 12px 40px rgba(0, 0, 0, .12);
+}
+
+.left {
+  display: flex;
+  justify-content: flex-start;
+  // [theme.breakpoints.down(xs)]: {
+  //   justifyContent: center;
+  //   marginBottom: 24
+  // }
+}
+
+.right {
+  display: flex;
+  justify-content: flex-end;
+  min-height: 43px;
+  align-items: center;
+  // [theme.breakpoints.down(xs)]: {
+  //   justifyContent: center
+  // }
+}
+
+.row {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  align-items: center;
+  flex-basis: 100%;
+  width: 100%;
+}
+
+.half {
+  // flex-basis: 48%;
+}
+
+.center {
+  justify-content: center;
+}
+
+.error {
+  border: 1px solid #d73a49 !important
+}
+
+.thumbnail {
+  border: 1px solid #bdbdbd;
+  border-radius: 3px;
+  padding: 6px;
+  margin-right: 20px;
+}
+
+.media {
+  width: 136px;
+  min-height: 176px;
+}
+
+.formHelperText {
+  margin: 0;
+}
+
+
+.listItem {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  // background-color: #fafafa;
+  padding: 6px 10px;
+  line-height: 24px;
+  color: $antiFlashWhite;
+  align-items: center;
+
+  .listItemIcon {
+    margin-right: 15px;
+
+    svg {
+      display: block;
+    }
+  }
+}
+
+.checkboxTerms {
+  color: #fff;
+}

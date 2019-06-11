@@ -1,0 +1,34 @@
+@import '../../styles/theme.scss';
+
+.brand {
+  flex: 1;
+  font-size: 18px;
+  font-weight: 400;
+  letter-spacing: 0.5px;
+  margin-left: 0.4em;
+}
+
+.link {
+  color: #fff;
+  text-decoration: none;
+}
+
+.header:global(.ant-layout-header) {
+  background-color: $indigo;
+}
+
+.button:global(.ant-btn) {
+  background-color: rgba($green, 0.1);
+  border-color: transparent;
+  color: #fff;
+
+  &:hover {
+    background-color: rgba($green, 0.1);
+    border-color: transparent;
+    color: #fff;
+  }
+  svg {
+    fill: $green;
+  }
+}
+

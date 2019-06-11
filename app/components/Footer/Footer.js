@@ -1,41 +1,6 @@
 import React from 'react'
-import { withStyles } from '@material-ui/core/styles'
-
-const styles = {
-  root: {
-    // backgroundColor: '#24292e',
-    backgroundImage: 'linear-gradient(to bottom, #121212 0%, #323232 100%)',
-    color: 'rgba(255,255,255,.7)'
-  },
-  footer: {
-    display: 'flex',
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    alignItems: 'center',
-    padding: '30px'
-  },
-  inner: {
-    display: 'flex',
-    flexDirection: 'row',
-    justifyContent: 'center',
-    margin: '0 auto'
-  },
-  link: {
-    color: 'rgba(255,255,255,.7)',
-    textDecoration: 'none'
-  },
-  listItem: {
-    listStyleType: 'none',
-    marginBottom: '0.6em'
-  },
-  column: {
-    display: 'flex',
-    flexDirection: 'column',
-    padding: 0,
-    margin: 0,
-    minWidth: '160px'
-  }
-}
+import Layout from 'antd/lib/layout'
+import classes from './styles.scss'
 
 const left = [
   { text: 'Login', link: '/login' },
@@ -52,9 +17,8 @@ const right = [
 
 class Footer extends React.Component {
   render () {
-    const { classes } = this.props
     return (
-      <footer className={classes.root}>
+      <Layout.Footer className={classes.root}>
         <div className={classes.footer}>
           <div className={classes.inner}>
             <ul className={classes.column}>
@@ -92,9 +56,9 @@ class Footer extends React.Component {
           </div>
           <div />
         </div>
-      </footer>
+      </Layout.Footer>
     )
   }
 }
 
-export default withStyles(styles)(Footer)
+export default Footer

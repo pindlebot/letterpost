@@ -2,7 +2,7 @@ import React from 'react'
 import Paper from '@material-ui/core/Paper'
 import withStyles from '@material-ui/core/styles/withStyles'
 import 'isomorphic-fetch'
-import Button from '@material-ui/core/Button'
+import Button from 'antd/lib/button'
 import styles from './styles'
 import SupportedUploadFormats from '../SupportedUploadFormats'
 

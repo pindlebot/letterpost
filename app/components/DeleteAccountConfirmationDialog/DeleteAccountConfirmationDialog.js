@@ -1,14 +1,14 @@
 import React from 'react'
-import Dialog from '@material-ui/core/Dialog'
-import DialogTitle from '@material-ui/core/DialogTitle'
-import DialogActions from '@material-ui/core/DialogActions'
-import Button from '@material-ui/core/Button'
+
 import { Mutation } from 'react-apollo'
 import { DELETE_USER } from '../../graphql/mutations'
 
+import Popconfirm from 'antd/lib/popconfirm'
+import Button from 'antd/lib/button'
+
 class DeleteAccountConfirmationDialog extends React.Component {
   deleteAccount = mutate => async evt => {
-    let data = await mutate({
+    await mutate({
       variables: {
         id: this.props.user.id
       }
@@ -17,25 +17,25 @@ class DeleteAccountConfirmationDialog extends React.Component {
       this.props.redirect('/')
     })
   }
+
   render () {
     return (
       <Mutation mutation={DELETE_USER}>
         {mutate => {
           return (
-            <Dialog
-              open={this.props.open}
-              onClose={this.handleClose}
+            <Popconfirm
+              title='Are you sure delete your account?'
+              onConfirm={this.deleteAccount(mutate)}
+              onCancel={this.props.handleClose}
+              okText='Yes'
+              cancelText='No'
             >
-              <DialogTitle>Delete Account</DialogTitle>
-              <DialogActions>
-                <Button onClick={this.props.handleClose} color={'primary'} variant={'text'}>
-                  Cancel
-                </Button>
-                <Button onClick={this.deleteAccount(mutate)} color={'primary'} variant={'text'}>
-                  Delete Account
-                </Button>
-              </DialogActions>
-            </Dialog>
+              <Button
+                disabled={this.props.user.role !== 'USER'}
+              >
+                Delete Account
+              </Button>
+            </Popconfirm>
           )
         }}
       </Mutation>

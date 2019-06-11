@@ -1,0 +1,9 @@
+.main {
+  max-width: 720px;
+  width: 100%;
+  margin: 24px auto;
+  flex-grow: 1;
+  // [theme.breakpoints.down('sm')]: {
+  //   maxWidth: '90vw'
+  // }
+}

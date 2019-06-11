@@ -1,26 +1,14 @@
 import React from 'react'
 import PropTypes from 'prop-types'
-import TextField from '@material-ui/core/TextField'
-import { withStyles } from '@material-ui/core/styles'
 import { Mutation } from 'react-apollo'
 import { ADDRESS_QUERY } from '../../graphql/queries'
 import { UPDATE_ADDRESS } from '../../graphql/mutations'
 import AddressKindToggle from '../AddressKindToggle'
-import Grid from '@material-ui/core/Grid'
-
-const styles = theme => ({
-  textField: {
-    width: '100%'
-  },
-  form: {},
-  flex: {
-    display: 'flex',
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    width: '100%'
-  },
-  half: {}
-})
+import Input from 'antd/lib/input'
+import Row from 'antd/lib/row'
+import Col from 'antd/lib/col'
+import Form from 'antd/lib/form'
+import classes from './styles.scss'
 
 const uppercase = str => str.substring(0, 1).toUpperCase() + str.substring(1, str.length)
 
@@ -34,22 +22,24 @@ const VALIDATION = {
   apt: () => true
 }
 
-const Field = ({ name, className, address, onChange, onBlur, margin, error }) => (
-  <TextField
-    error={Boolean(error && error[name])}
+const Field = ({
+  name,
+  className,
+  address,
+  onChange,
+  onBlur,
+  margin,
+  error
+}) => (
+  <Input
+    // error={Boolean(error && error[name])}
     key={name}
-    id={name}
     style={{ width: '100%' }}
-    label={uppercase(name)}
     placeholder={name}
-    margin={margin}
     value={address[name] || ''}
     onBlur={onBlur}
     onChange={({ currentTarget }) => onChange({ [name]: currentTarget.value })}
-    InputProps={{
-      shrink: {},
-      disableUnderline: true
-    }}
+    type={'text'}
   />
 )
 
@@ -192,7 +182,8 @@ class RecipientForm extends React.Component {
   }
 
   render () {
-    let { classes } = this.props
+    console.log(this.props)
+    let { form } = this.props
     let user = this.props.user?.data?.user
     let currentOrder = this.props.order?.data?.currentOrder
 
@@ -217,67 +208,79 @@ class RecipientForm extends React.Component {
       <Mutation mutation={UPDATE_ADDRESS}>
         {(mutate, { error, data, loading }) => {
           return (
-            <Grid container spacing={8}>
-              <Grid item xs={12}>
-                <AddressKindToggle
-                  client={this.props.client}
-                  user={this.props.user}
-                  handleAlignment={this.handleAlignment}
-                  kind={this.state.kind}
-                />
-              </Grid>
+            <div className={classes.root}>
+              <Row gutter={16}>
+                <Col span={24}>
+                  <AddressKindToggle
+                    client={this.props.client}
+                    user={this.props.user}
+                    handleAlignment={this.handleAlignment}
+                    kind={this.state.kind}
+                  />
+                </Col>
+              </Row>
               {Object.keys(fields).map(key =>
-                <Grid item xs={12} key={`${key}-grid`}>
+                <Row gutter={16}>
+                  <Col span={24} key={`${key}-grid`}>
+                    {form.getFieldDecorator('username', {
+                      rules: [{ required: true, message: 'Please input your username!' }],
+                    })(
+                      <Field
+                        key={key}
+                        name={key}
+                        className={classes.textField}
+                        address={address}
+                        onChange={this.onChange}
+                        onBlur={this.update({ mutate, key })}
+                        error={this.state.error}
+                      />
+                    )}
+                  </Col>
+                </Row>
+              )}
+              <Row gutter={16}>
+                <Col span={12}>
                   <Field
-                    key={key}
-                    name={key}
-                    className={classes.textField}
+                    name={'apt'}
+                    className={classes.half}
                     address={address}
                     onChange={this.onChange}
-                    onBlur={this.update({ mutate, key })}
+                    onBlur={this.update({ mutate, key: 'apt' })}
                     error={this.state.error}
                   />
-                </Grid>
-              )}
-              <Grid item xs={6}>
-                <Field
-                  name={'apt'}
-                  className={classes.half}
-                  address={address}
-                  onChange={this.onChange}
-                  onBlur={this.update({ mutate, key: 'apt' })}
-                  error={this.state.error}
-                />
-              </Grid>
-              <Grid item xs={6}>
-                <Field
-                  name={'city'}
-                  address={address}
-                  onChange={this.onChange}
-                  onBlur={this.update({ mutate, key: 'city' })}
-                  error={this.state.error}
-                />
-              </Grid>
-              <Grid item xs={6}>
-                <Field
-                  name={'state'}
-                  className={classes.half}
-                  address={address}
-                  onChange={this.onChange}
-                  onBlur={this.update({ mutate, key: 'state' })}
-                  error={this.state.error}
-                />
-              </Grid>
-              <Grid item xs={6}>
-                <Field
-                  name={'postalCode'}
-                  address={address}
-                  onChange={this.onChange}
-                  onBlur={this.update({ mutate, key: 'postalCode' })}
-                  error={this.state.error}
-                />
-              </Grid>
-            </Grid>
+                </Col>
+                <Col span={12}>
+                  <Field
+                    name={'city'}
+                    address={address}
+                    onChange={this.onChange}
+                    onBlur={this.update({ mutate, key: 'city' })}
+                    error={this.state.error}
+                  />
+                </Col>
+              </Row>
+              <Row gutter={16}>
+                <Col span={12}>
+                  <Field
+                    name={'state'}
+                    className={classes.half}
+                    address={address}
+                    onChange={this.onChange}
+                    onBlur={this.update({ mutate, key: 'state' })}
+                    error={this.state.error}
+                  />
+                </Col>
+                <Col span={12}>
+                  <Field
+                    name={'postalCode'}
+                    address={address}
+                    onChange={this.onChange}
+                    onBlur={this.update({ mutate, key: 'postalCode' })}
+                    error={this.state.error}
+                  />
+                </Col>
+              </Row>
+            </div>
           )
         }}
       </Mutation>
@@ -285,4 +288,4 @@ class RecipientForm extends React.Component {
   }
 }
 
-export default withStyles(styles)(RecipientForm)
+export default Form.create({ name: 'recipient' })(RecipientForm)

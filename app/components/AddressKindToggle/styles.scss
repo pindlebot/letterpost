@@ -1,0 +1,21 @@
+.icon {
+  margin-right: 10px;
+}
+
+.toggleButtonGroup {
+  width: 100%;
+  justify-content: space-between;
+  box-shadow: none;
+}
+
+.toggleButton {
+  flex-basis: 50%;
+  width: 50%;
+}
+
+
+.flex {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}

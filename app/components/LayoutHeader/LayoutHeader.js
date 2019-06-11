@@ -1,36 +1,14 @@
 /* eslint-disable react/no-danger */
 import React from 'react'
-import { withStyles } from '@material-ui/core/styles'
-import AppBar from '@material-ui/core/AppBar'
-import Toolbar from '@material-ui/core/Toolbar'
-import Typography from '@material-ui/core/Typography'
-import IconButton from '@material-ui/core/IconButton'
 import LayoutHeaderMenu from '../LayoutHeaderMenu'
 import config from '../../lib/config'
-import Button from '@material-ui/core/Button'
-import DocumentIcon from '../DocumentIcon'
+import Button from 'antd/lib/button'
 import { compose } from 'react-apollo'
 import { connect } from 'react-redux'
 import { push } from 'connected-react-router'
-
-const styleSheet = {
-  root: {
-    backgroundColor: '#fff',
-    boxShadow: 'none',
-    borderBottom: '1px solid #F5F5F5'
-  },
-  brand: {
-    flex: '1',
-    fontSize: '18px',
-    fontWeight: '400',
-    letterSpacing: '0.5px',
-    marginLeft: '0.4em'
-  },
-  link: {
-    color: '#123',
-    textDecoration: 'none'
-  }
-}
+import Layout from 'antd/lib/layout'
+import styles from './styles.scss'
+import Toolbar from 'Toolbar'
 
 const LandingPageMenu = props => {
   const { logged } = props
@@ -39,6 +17,7 @@ const LandingPageMenu = props => {
       <Button
         style={{ marginRight: '20px' }}
         onClick={props.order}
+        className={styles.button}
       >
         Order
       </Button>
@@ -49,14 +28,13 @@ const LandingPageMenu = props => {
       <Button
         style={{ marginRight: '20px' }}
         onClick={props.login}
-
+        className={styles.button}
       >
         Login
       </Button>
       <Button
-        variant={'contained'}
-        color={'primary'}
         onClick={props.login}
+        className={styles.button}
       >
         Create Account
       </Button>
@@ -72,32 +50,26 @@ const LayoutHeader = props => {
   const { classes, ...other } = props
 
   return (
-    <header>
-      <AppBar position='static' className={classes.root}>
-        <Toolbar>
-          <IconButton
-            onClick={() => {}}
-            color='inherit'
-            aria-label='Menu'
-          >
-            <DocumentIcon background={'rgba(255,255,255,0.1)'} fill={'rgba(0,0,0,0.8)'} />
-          </IconButton>
-          <Typography
-            type='title'
-            color='inherit'
-            className={classes.brand}
-          >
-            <a href='/' className={classes.link}>
-              {config.APP_NAME}
-            </a>
-          </Typography>
-          {props.landing
-            ? <LandingPageMenu {...other} />
-            : <LayoutHeaderMenu {...other} />
-          }
-        </Toolbar>
-      </AppBar>
-    </header>
+    <Layout.Header style={{ zIndex: 1, width: '100%' }} className={styles.header}>
+      <Toolbar>
+        <Button
+          className={styles.button}
+          onClick={() => {}}
+          color='inherit'
+          aria-label='Menu'
+          shape={'circle'}
+          icon={'mail'}
+        />
+        <div className={styles.brand}>
+          <a href='/' className={styles.link}>
+            {config.APP_NAME}
+          </a>
+        </div>
+        {props.landing
+          ? <LandingPageMenu {...other} />
+          : <LayoutHeaderMenu {...other} />}
+      </Toolbar>
+    </Layout.Header>
   )
 }
 
@@ -110,5 +82,4 @@ export default compose(
       account: () => dispatch(push('/account'))
     })
   ),
-  withStyles(styleSheet)
 )(LayoutHeader)

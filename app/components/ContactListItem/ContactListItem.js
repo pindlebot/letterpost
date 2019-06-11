@@ -1,61 +1,40 @@
 import React from 'react'
 import PropTypes from 'prop-types'
-import ListItem from '@material-ui/core/ListItem'
-import ListItemText from '@material-ui/core/ListItemText'
-import ListItemSecondaryAction from '@material-ui/core/ListItemSecondaryAction'
-import IconButton from '@material-ui/core/IconButton'
-import DeleteIcon from '@material-ui/icons/Delete'
-import { withStyles } from '@material-ui/core/styles'
-import Checkbox from '@material-ui/core/Checkbox'
-import get from 'lodash.get'
 
-const styles = {
-  root: {
-    backgroundColor: '#f6f8fa',
-    color: '#24292e',
-    paddingTop: 0,
-    paddingBottom: 0
-  },
-  icon: {
-    color: '#586069'
-  }
-}
+import List from 'antd/lib/list'
+import Checkbox from 'antd/lib/checkbox'
+import Button from 'antd/lib/button'
+import styles from './styles.scss'
 
 const ContactListItem = props => {
   const {
     selectContact,
     deleteContact,
-    classes,
     contact,
     checked
   } = props
   const { address } = contact
   return (
-    <ListItem
+    <List.Item
       button
       onClick={e => selectContact(contact)}
-      className={classes.root}
+      className={styles.root}
     >
       <Checkbox
         checked={checked}
         tabIndex={-1}
         disableRipple
       />
-      <ListItemText
-        inset
-        primary={address.name || ''}
+      {address.name}
+      <Button
+        aria-label='Delete'
+        onClick={(e) => {
+          deleteContact({ id: contact.id })
+        }}
+        shape={'circle'}
+        icon={'delete'}
       />
-      <ListItemSecondaryAction>
-        <IconButton
-          aria-label='Delete'
-          onClick={(e) => {
-            deleteContact({ id: contact.id })
-          }}
-        >
-          <DeleteIcon />
-        </IconButton>
-      </ListItemSecondaryAction>
-    </ListItem>
+    </List.Item>
   )
 }
 
@@ -68,4 +47,4 @@ const ContactListItem = props => {
 //  redirect: PropTypes.func.isRequired
 // }
 
-export default withStyles(styles)(ContactListItem)
+export default ContactListItem
