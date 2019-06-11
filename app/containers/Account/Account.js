@@ -12,10 +12,9 @@ import EditPasswordTextField from 'EditPasswordTextField'
 import { connect } from 'react-redux'
 import { setGraphQLErrors } from '../../lib/redux'
 import { push } from 'connected-react-router'
-import Button from 'antd/lib/button'
 import DeleteAccountConfirmationDialog from 'DeleteAccountConfirmationDialog'
-import Col from 'antd/lib/Col'
-import Row from 'antd/lib/Row'
+import Col from 'antd/lib/col'
+import Row from 'antd/lib/row'
 
 const styles = theme => ({
   h1: {
