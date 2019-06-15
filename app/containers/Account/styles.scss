@@ -1,0 +1,61 @@
+@import '../../styles/theme.scss';
+
+.main {
+  width: 100%;
+  margin: 24px auto;
+  max-width: 720px;
+  flex-grow: 1;
+}
+.grid {
+  padding: 30px;
+  box-shadow: 0 12px 40px rgba(0, 0, 0, 0.12);
+  transition: box-shadow 150ms ease;
+  align-items: center;
+  border-radius: 3px;
+  margin-bottom: 24px;
+  justify-content: space-between;
+  background-color: $indigo;
+}
+.left {
+  justify-content: flex-start;
+}
+.right {
+  align-items: flex-end;
+}
+.column {
+  width: 100%;
+  margin: 0 0 32px 0;
+  border: 1px solid #F5F5F5;
+  display: flex;
+  padding: 24px;
+  box-sizing: border-box;
+  align-items: center;
+  border-radius: 3px;
+  flex-direction: column;
+  justify-content: center;
+  background-color: #fff;
+}
+.row {
+  width: 100%;
+  display: flex;
+  flex-basis: 100%;
+  align-items: center;
+  flex-direction: row;
+  justify-content: space-between;
+}
+.one-third {
+  flex-basis: 33%;
+}
+.two-thirds {
+  flex-basis: 66%;
+}
+.form {
+  display: flex;
+  flex-direction: row;
+}
+.form > div:first-child {
+  margin-right: 12px;
+}
+.h4 {
+  color: #fff;
+}

@@ -6,13 +6,8 @@ class GraphQLErrorsSnackbar extends React.Component {
   render () {
     const { snackbar, graphQLErrors } = this.props.root
     if (!graphQLErrors || !graphQLErrors.length) return false
-    console.log(graphQLErrors)
     return graphQLErrors.map((error, i) => (
       <Snackbar
-        // anchorOrigin={{
-        //  vertical: 'bottom',
-        //  horizontal: 'left'
-        // }}
         open={snackbar.show}
         autoHideDuration={6000}
         onClose={this.props.handleClose}

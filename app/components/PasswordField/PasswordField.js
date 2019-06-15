@@ -1,23 +1,8 @@
 import React from 'react'
 import PropTypes from 'prop-types'
-import { withStyles } from '@material-ui/core/styles'
-// import IconButton from '@material-ui/core/IconButton'
-// import Input from '@material-ui/core/Input'
-// import InputAdornment from '@material-ui/core/InputAdornment'
-// import FormControl from '@material-ui/core/FormControl'
-// ort Visibility from '@material-ui/icons/Visibility'
-// import VisibilityOff from '@material-ui/icons/VisibilityOff'
 import Input from 'antd/lib/input'
 import Button from 'antd/lib/button'
-
-const styles = theme => ({
-  root: {
-    display: 'flex',
-    flexWrap: 'wrap'
-  },
-  formControl: {},
-  withoutLabel: {}
-})
+import classes from './styles.scss'
 
 class PasswordField extends React.Component {
   state = {
@@ -40,7 +25,7 @@ class PasswordField extends React.Component {
   }
 
   render () {
-    const { classes, value, onChange } = this.props
+    const { value, onChange } = this.props
     const { showPassword } = this.state
     return (
       <div className={classes.root}>
@@ -80,4 +65,4 @@ PasswordField.defaultProps = {
   }
 }
 
-export default withStyles(styles)(PasswordField)
+export default PasswordField

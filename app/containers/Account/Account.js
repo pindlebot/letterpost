@@ -15,85 +15,7 @@ import { push } from 'connected-react-router'
 import DeleteAccountConfirmationDialog from 'DeleteAccountConfirmationDialog'
 import Col from 'antd/lib/col'
 import Row from 'antd/lib/row'
-
-const styles = theme => ({
-  h1: {
-    color: '#fff',
-    fontWeight: 700
-  },
-  main: {
-    maxWidth: 720,
-    width: '100%',
-    margin: '24px auto',
-    flexGrow: 1,
-    [theme.breakpoints.down('sm')]: {
-      maxWidth: '90vw'
-    }
-  },
-  grid: {
-    borderRadius: 3,
-    marginBottom: 24,
-    justifyContent: 'space-between',
-    alignItems: 'center',
-    boxShadow: '0 12px 40px rgba(0, 0, 0, 0.12)',
-    transition: 'box-shadow 150ms ease',
-    backgroundColor: '#3C4055',
-    backgroundImage: 'linear-gradient(295.7deg, #3B3F55 0.49%, #33334C 95.3%)',
-    padding: 30
-  },
-  left: {
-    justifyContent: 'flex-start',
-    [theme.breakpoints.down('xs')]: {
-      justifyContent: 'center',
-      marginBottom: 24
-    }
-  },
-  right: {
-    alignItems: 'flex-end',
-    [theme.breakpoints.down('xs')]: {
-      justifyContent: 'center',
-      margin: 0,
-      width: '100%'
-    }
-  },
-  column: {
-    display: 'flex',
-    flexDirection: 'column',
-    justifyContent: 'center',
-    alignItems: 'center',
-    width: '100%',
-    margin: '0 0 32px 0',
-    backgroundColor: '#fff',
-    padding: 24,
-    borderRadius: 3,
-    border: '1px solid #F5F5F5',
-    boxSizing: 'border-box'
-  },
-  row: {
-    display: 'flex',
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    alignItems: 'center',
-    flexBasis: '100%',
-    width: '100%'
-  },
-  'one-third': {
-    flexBasis: '33%'
-  },
-  'two-thirds': {
-    flexBasis: '66%'
-  },
-  form: {
-    display: 'flex',
-    flexDirection: 'row',
-    '& > div:first-child': {
-      marginRight: 12
-    }
-  },
-  h4: {
-    color: '#fff'
-  }
-})
+import classes from './styles.scss'
 
 class Account extends React.Component {
   static propTypes = {
@@ -124,7 +46,7 @@ class Account extends React.Component {
   }
 
   render () {
-    const { classes, ...other } = this.props
+    const { ...other } = this.props
     const {
       user: {
         data: {
@@ -227,7 +149,6 @@ class Account extends React.Component {
 export default compose(
   withApollo,
   withRouter,
-  withStyles(styles),
   connect(
     state => state,
     dispatch => ({

@@ -29,6 +29,7 @@ class Layout extends Component {
           logged={logged}
         />
         <AntLayout.Content className={styles.root} style={{ padding: '24px 50px' }}>
+          Hello World
           {this.props.children}
         </AntLayout.Content>
         <Footer {...other} />

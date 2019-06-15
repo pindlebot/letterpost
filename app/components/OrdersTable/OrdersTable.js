@@ -5,26 +5,13 @@ import TableCell from '@material-ui/core/TableCell'
 import TableHead from '@material-ui/core/TableHead'
 import TableRow from '@material-ui/core/TableRow'
 import Paper from '@material-ui/core/Paper'
-import { withStyles } from '@material-ui/core/styles'
 import OrdersToolbar from '../OrdersTableToolbar'
 import Row from '../OrdersTableRow'
 import { graphql, compose } from 'react-apollo'
-import get from 'lodash.get'
 import { DELETE_UPLOAD } from '../../graphql/mutations'
 import { UPLOAD_QUERY } from '../../graphql/queries'
 
-const stylesheet = {
-  paper: {
-    padding: 0
-  }
-}
-
 class OrdersTable extends React.Component {
-  selectOrder = (order) => {
-    // const { query } = this.props.url
-    // const param = query.id === order.id ? '' : `?id=${order.id}`
-  }
-
   render () {
     const {
       orders: {
@@ -105,6 +92,5 @@ export default compose(
         }
       })
     })
-  }),
-  withStyles(stylesheet)
+  })
 )(OrdersTable)

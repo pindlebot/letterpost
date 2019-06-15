@@ -11,23 +11,9 @@ import debounce from 'debounce'
 import { connect } from 'react-redux'
 import { setValidationError, clearValidationError } from '../../lib/redux'
 import isEmail from '../../lib/isEmail'
-import ErrorIcon from '@material-ui/icons/Error'
-import Button from 'antd/lib/button'
 import Input from 'antd/lib/input'
 import Icon from 'antd/lib/icon'
-
-const styles = theme => ({
-  root: {
-    display: 'flex',
-    flexWrap: 'wrap'
-  },
-  margin: {
-    // margin: theme.spacing.unit
-  },
-  label: {
-    color: '#ddd'
-  }
-})
+import classes from './styles.scss'
 
 class EditEmailTextField extends React.Component {
   static propTypes = {
@@ -60,18 +46,6 @@ class EditEmailTextField extends React.Component {
       disabled: Boolean(emailAddress)
     }
   }
-
-  // componentDidUpdate (prevProps) {
-  //   const emailAddress = this.props?.user?.data?.user?.emailAddress
-  //   if (this.state.emailAddress) return
-  //   if (!emailAddress) return
-
-  //   this.setState({
-  //     disabled: Boolean(emailAddress),
-  //     emailAddress: emailAddress,
-  //     inUse: true
-  //   })
-  // }
 
   debounced = debounce(async (emailAddress, { mutate }) => {
     const { root: { validationErrors } } = this.props
@@ -184,7 +158,7 @@ class EditEmailTextField extends React.Component {
   }
 
   render () {
-    const { classes, root: { validationErrors } } = this.props
+    const { root: { validationErrors } } = this.props
     const { emailAddress } = this.state
     const invalid = validationErrors.hasOwnProperty('EditEmailTextField')
     return (
@@ -223,7 +197,6 @@ class EditEmailTextField extends React.Component {
 }
 
 export default compose(
-  withStyles(styles),
   connect(
     state => state,
     dispatch => ({

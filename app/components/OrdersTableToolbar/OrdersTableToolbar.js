@@ -1,22 +1,11 @@
 import React from 'react'
 import PropTypes from 'prop-types'
-import { withStyles } from '@material-ui/core/styles'
 import Toolbar from '@material-ui/core/Toolbar'
 import DeleteIcon from '@material-ui/icons/Delete'
 import IconButton from '@material-ui/core/IconButton'
 import EditIcon from '@material-ui/icons/Edit'
 import Typography from '@material-ui/core/Typography'
-
-const stylesheet = {
-  flex: {},
-  right: {},
-  spacer: {
-    flex: '1 1 100%'
-  },
-  title: {
-    flex: '0 0 auto'
-  }
-}
+import stylesheet from './styles.scss'
 
 const OrdersToolbar = (props) => {
   const {
@@ -27,13 +16,11 @@ const OrdersToolbar = (props) => {
 
   return (
     <Toolbar className={classes.flex}>
-      <Typography
-        variant='h2'
-        gutterBottom
+      <h2
         className={classes.title}
       >
         Orders
-      </Typography>
+      </h2>
       <div className={classes.spacer} />
       <IconButton
         onClick={() => {}}
@@ -57,4 +44,4 @@ OrdersToolbar.propTypes = {
   open: PropTypes.bool
 }
 
-export default withStyles(stylesheet)(OrdersToolbar)
+export default OrdersToolbar
