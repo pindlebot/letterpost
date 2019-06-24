@@ -1,5 +1,4 @@
 import React from 'react'
-import Paper from '@material-ui/core/Paper'
 import withStyles from '@material-ui/core/styles/withStyles'
 import 'isomorphic-fetch'
 import Button from 'antd/lib/button'
@@ -10,10 +9,10 @@ class UploadDropzone extends React.Component {
   render () {
     const { classes } = this.props
     return (
-      <Paper className={classes.paper} elevation={0}>
+      <div className={classes.paper}>
         <SupportedUploadFormats classes={classes} />
         <Button onClick={this.props.handleClick}>Upload Documents</Button>
-      </Paper>
+      </div>
     )
   }
 }
