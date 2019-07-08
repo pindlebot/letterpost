@@ -62,13 +62,12 @@ async function loadTemplate (variables = {}, { templateType }) {
 }
 
 const handleMessage = async (record) => {
-  let { Sns: { Message } } = record
-  let message = JSON.parse(Message)
-  console.log({ message })
+  const { Sns: { Message } } = record
+  const message = JSON.parse(Message)
   let { variables, emailAddress, templateType } = message
   templateType = templateType || 'reset'
-  let html = await loadTemplate(message.variables, { templateType })
-  let template = TEMPLATES[templateType]
+  const html = await loadTemplate(message.variables, { templateType })
+  const template = TEMPLATES[templateType]
   return sendEmail({ ...template.variables, emailAddress, html })
 }
 

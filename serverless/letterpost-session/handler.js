@@ -19,19 +19,21 @@ const createResponse = data => ({
   body: JSON.stringify(data)
 })
 
-const sign = (payload) => new Promise((resolve, reject) =>
-  jwt.sign(
-    payload,
-    CLIENT_SESSION_SECRET, {
-      expiresIn: '168h',
-      audience: CLIENT_SESSION_ID
-    },
-    (err, token) => {
-      if (err) reject(err)
-      else resolve({ token })
-    }
+function sign (payload) {
+  return new Promise((resolve, reject) =>
+    jwt.sign(
+      payload,
+      CLIENT_SESSION_SECRET, {
+        expiresIn: '168h',
+        audience: CLIENT_SESSION_ID
+      },
+      (err, token) => {
+        if (err) reject(err)
+        else resolve({ token })
+      }
+    )
   )
-)
+}
 
 async function verify ({
   token = null

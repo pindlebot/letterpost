@@ -9,13 +9,25 @@ function charge ({ stripeCustomerId, amount }) {
 }
 
 async function createSource ({ stripeEmail, stripeTokenId }) {
-  const customer = await stripe.customers.create({
-    email: stripeEmail
-  })
-  const source = await stripe.customers.createSource(customer.id, {
-    source: stripeTokenId
-  })
+  let customer
+  try {
+    customer = await stripe.customers.create({
+      email: stripeEmail
+    })
+  } catch (err) {
+    console.error(err)
+    throw err
+  }
 
+  let source
+  try {
+    source = await stripe.customers.createSource(customer.id, {
+      source: stripeTokenId
+    })
+  } catch (err) {
+    console.error(err)
+    throw err
+  }
   return source
 }
 

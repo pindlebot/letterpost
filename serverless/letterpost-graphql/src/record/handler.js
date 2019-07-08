@@ -12,8 +12,8 @@ const CHARGES_TABLE = `${DYNAMODB_PREFIX}-charges`
 const EVENTS_TABLE = `${DYNAMODB_PREFIX}-events`
 
 const removeObjectsByPrefix = async ({ prefix }) => {
-  let s3 = new AWS.S3({ region: AWS_REGION })
-  let { Contents } = await s3.listObjects({
+  const s3 = new AWS.S3({ region: AWS_REGION })
+  const { Contents } = await s3.listObjects({
     Prefix: prefix,
     Bucket: AWS_BUCKET
   }).promise()
@@ -32,16 +32,13 @@ const removeObjectsByPrefix = async ({ prefix }) => {
 
 async function removeAll (suffix, { user }) {
   const table = `${DYNAMODB_PREFIX}-${suffix}`
-  let records = await db(table)
+  const records = await db(table)
     .get({ user })
   return Promise.all(
     records.map(({ id }) =>
       db(table).remove({ id })
     )
-  ).then(data => {
-    console.log(data)
-    return data
-  })
+  )
 }
 
 async function handleRemoveEvent (record, { modelName }) {

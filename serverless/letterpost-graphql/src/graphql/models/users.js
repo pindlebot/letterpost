@@ -156,7 +156,6 @@ async function resetPassword ({ emailAddress, user: userId }) {
       }),
       TopicArn: SES_TOPIC_ARN
     }
-    console.log(params)
     await sns.publish(params).promise()
     return true
   }

@@ -17,13 +17,14 @@ const iot = new AWS.IotData({
 })
 
 const handleMessage = async (data) => {
-  console.log(JSON.stringify(data))
-  let { key, pages, resized, stats, steps } = data
-  let objectPrefix = path.dirname(key)
+  const { key, pages, resized, stats, steps } = data
+  const objectPrefix = path.dirname(key)
+
   if (stats) {
     stats.endTime = Date.now()
     stats.duration = stats.endTime - stats.startTime
   }
+
   const params = {
     id: objectPrefix,
     key
@@ -35,8 +36,8 @@ const handleMessage = async (data) => {
     params.status = 'DONE'
   }
 
-  let errors = data.errors
-  let upload = await db(UPLOADS_TABLE).set(params).catch(err => {
+  const errors = data.errors
+  const upload = await db(UPLOADS_TABLE).set(params).catch(err => {
     errors.push({ message: err.toString() })
   })
 

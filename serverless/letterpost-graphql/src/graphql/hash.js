@@ -1,6 +1,7 @@
 const bcrypt = require('bcryptjs')
 const { ValidationError, AuthenticationError } = require('apollo-server-lambda')
 const db = require('dynamodb-tools')
+
 const USERS_TABLE = `${process.env.DYNAMODB_PREFIX}-users`
 
 class Hash {

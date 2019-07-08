@@ -7,9 +7,8 @@ const UPLOADS_TABLE = `${DYNAMODB_PREFIX}-uploads`
 let sqs = new AWS.SQS({ region: AWS_REGION })
 
 const processUpload = async (message, end) => {
-  let { Body, Attributes, MessageAttributes } = message
-  let upload = await db(UPLOADS_TABLE).get({ id: Body })
-  console.log({ upload })
+  const { Body, Attributes, MessageAttributes } = message
+  const upload = await db(UPLOADS_TABLE).get({ id: Body })
   if (!upload) {
     return end()
   }
@@ -28,7 +27,6 @@ const processUpload = async (message, end) => {
 const processSession = async (message, end) => {
   let { Body, Attributes, MessageAttributes } = message
   let user = await db(USERS_TABLE).get({ id: Body })
-  console.log({ user })
   if (!(
     user &&
     user.role === 'SESSION' &&
@@ -37,13 +35,11 @@ const processSession = async (message, end) => {
     return end()
   }
   if (parseInt(Attributes.SentTimestamp) < (Date.now() - 11 * 60 * 60 * 1000)) {
-    console.log(`Removing "users/${Body}"`)
     await db(USERS_TABLE).remove({ id: Body })
       .then(console.log.bind(console))
     await end()
   } else {
     const VisibilityTimeout = 43200 - ((Date.now() - parseInt(Attributes.SentTimestamp)) * 1000)
-    console.log({ VisibilityTimeout })
     await sqs.changeMessageVisibility({
       QueueUrl: HEAL_SQS_QUEUE_URL,
       ReceiptHandle: message.ReceiptHandle,
@@ -60,9 +56,8 @@ const processMessage = async (message) => {
     }).promise()
   }
 
-  console.log(JSON.stringify(message))
-  let { MessageAttributes } = message
-  let modelName = MessageAttributes.modelName.StringValue
+  const { MessageAttributes } = message
+  const modelName = MessageAttributes.modelName.StringValue
   switch (modelName) {
     case 'uploads':
       await processUpload(message, end)

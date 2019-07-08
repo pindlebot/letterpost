@@ -1,17 +1,18 @@
 const path = require('path')
 const fs = require('fs')
 const { randomBytes } = require('crypto')
-const convert = require('./convert')
 const url = require('url')
 const https = require('https')
 
+const convert = require('./convert')
+
 const handleConvert = (json) => {
-  let { pathname } = url.parse(json.url)
-  let id = randomBytes(10).toString('hex')
-  let docPath = path.join('/tmp', `${id}-${path.basename(pathname)}`)
+  const { pathname } = url.parse(json.url)
+  const id = randomBytes(10).toString('hex')
+  const docPath = path.join('/tmp', `${id}-${path.basename(pathname)}`)
   return new Promise(resolve => {
     https.get(json.url, async resp => {
-      let writeStream = fs.createWriteStream(docPath)
+      const writeStream = fs.createWriteStream(docPath)
       await new Promise((resolve, reject) => {
         resp.pipe(writeStream)
         writeStream.on('close', resolve)
@@ -22,14 +23,13 @@ const handleConvert = (json) => {
   })
 }
 
-const handleMessage = async (record) => {
-  let { Sns: { Message } } = record
-  let message = JSON.parse(Message)
-  console.log({ message })
+function handleMessage (record) {
+  const { Sns: { Message } } = record
+  const message = JSON.parse(Message)
   return handleConvert(message)
 }
 
-module.exports.handler = async (event, context) => {
+module.exports.handler = async function (event, context) {
   const { Records } = event
   await Promise.all(Records.map(handleMessage))
 }

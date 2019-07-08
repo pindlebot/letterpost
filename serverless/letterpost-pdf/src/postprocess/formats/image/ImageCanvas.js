@@ -1,7 +1,5 @@
 const Canvas = require('canvas')
 
-// sWidth/sHeight = dWidth/dHeight
-
 class ImageCanvas {
   constructor (buffer, { debug } = {}) {
     this.pageWidth = 612
@@ -21,16 +19,6 @@ class ImageCanvas {
   }
 
   drawImage (sx, sy, sWidth, sHeight, dWidth, dHeight) {
-    if (this.debug) {
-      console.log({
-        sx,
-        sy,
-        sWidth,
-        sHeight,
-        dWidth,
-        dHeight
-      })
-    }
     this.context.drawImage(
       this.image,
       sx,

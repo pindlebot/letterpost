@@ -1,3 +1,7 @@
+const GraphQLJSON = require('graphql-type-json')
+const { ValidationError } = require('apollo-server-lambda')
+const db = require('dynamodb-tools')
+
 const Users = require('./models/users')
 const Uploads = require('./models/uploads')
 const Contacts = require('./models/contacts')
@@ -8,13 +12,11 @@ const Letters = require('./models/letters')
 const Addresses = require('./models/addresses')
 const Options = require('./models/options')
 const Events = require('./models/events')
-const db = require('dynamodb-tools')
-const GraphQLJSON = require('graphql-type-json')
 const GraphQLAny = require('./types/GraphQLAny')
 const { calculateFee } = require('./util')
 const { sendEmail } = require('./email')
+
 const MESSAGES_TABLE = `${process.env.DYNAMODB_PREFIX}-messages`
-const { ValidationError } = require('apollo-server-lambda')
 
 const message = {
   get: ({ id }) => {
@@ -88,14 +90,8 @@ const resolvers = {
     addresses: (_, args, ctx) => rootQuery('addresses', ctx)
   },
   Mutation: {
-    sendMessage: (_, { input }, { user }) => {
-      return sendEmail({ ...input })
-    },
-    deleteMessage: async (_, args, { user }) => {
-      let data = await message.remove(args)
-      console.log({ data })
-      return data
-    },
+    sendMessage: (_, { input }, { user }) => sendEmail({ ...input }),
+    deleteMessage: (_, args, { user }) => message.remove(args),
     updatePassword: (_, { password }, { user }) => Users.updatePassword({ user, password }),
     createPresignedPost: (_, { key }, { user }) => Uploads.createPresignedPost({ user, key }),
     resetPassword: (_, { emailAddress }, { user }) => Users.resetPassword({ user, emailAddress }),
@@ -166,9 +162,7 @@ const resolvers = {
   },
   Upload: {
     user: (upload) => Users.get({ id: upload.user }),
-    orders: ({ id }, _, { user }) => {
-      return Orders.get({ upload: id })
-    }
+    orders: ({ id }, _, { user }) => Orders.get({ upload: id })
   },
   Charge: {
     user: (charge) => Users.get({ id: charge.user }),

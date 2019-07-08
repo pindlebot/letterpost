@@ -62,7 +62,6 @@ const uploadResizedPdf = async (state, errors) => {
 }
 
 const handleMessage = async ({ job, ...rest }) => {
-  console.log(rest)
   let { file, key: objectKey, sub } = rest
   const objectPrefix = path.dirname(objectKey)
   const state = {
@@ -122,7 +121,6 @@ module.exports.handler = async (event, context, callback) => {
       let { Sns: { Message } } = record
       let message = JSON.parse(Message)
       let result = await handleMessage(message)
-      console.log(result)
       if (result.objectKey !== message.objectKey) {
         await publish(result)
       }

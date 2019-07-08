@@ -1,15 +1,16 @@
 const aws4 = require('aws4')
 const mime = require('mime-types')
+
 const { AWS_REGION = 'us-east-1', AWS_BUCKET = 'letterpost' } = process.env
 
-const createTagSet = (data) => {
+function createTagSet (data) {
   const tags = Object.keys(data).map(key =>
     `<Tag><Key>${key}</Key><Value>${data[key]}</Value></Tag>`
   )
   return `<Tagging><TagSet>${tags.join('')}</TagSet></Tagging>`
 }
 
-const createReadStream = (key, { s3 }) => {
+function createReadStream (key, { s3 }) {
   const params = {
     Bucket: AWS_BUCKET,
     Key: key
@@ -21,7 +22,7 @@ const createReadStream = (key, { s3 }) => {
     )
 }
 
-const sign = ({ key }) => {
+function sign ({ key }) {
   let type = encodeURIComponent(mime.lookup(key))
   const host = 's3.amazonaws.com'
   const signed = aws4.sign({

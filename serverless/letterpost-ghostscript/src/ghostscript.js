@@ -11,7 +11,6 @@ module.exports = (operation, params) => {
     return re.test(acc) ? acc.replace(re, value) : acc
   }, commands[operation])
   return new Promise((resolve, reject) => {
-    console.log(command)
     exec(command, { shell: true }, (error, stdout, stderr) => {
       if (error) reject(error)
       else resolve({ stdout, stderr })

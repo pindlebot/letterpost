@@ -10,7 +10,6 @@ const EVENTS_TABLE = `${DYNAMODB_TABLE}-events`
 
 module.exports.handler = async (event, context, callback) => {
   const data = JSON.parse(event.body)
-  console.log(data)
   const {
     expected_delivery_date,
     send_date,

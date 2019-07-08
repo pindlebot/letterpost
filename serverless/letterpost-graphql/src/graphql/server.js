@@ -1,9 +1,11 @@
-const resolvers = require('./resolvers')
-const { ApolloServer, makeExecutableSchema } = require('apollo-server-lambda')
-const DefaultDirective = require('./directives/DefaultDirective')
-const AuthDirective = require('./directives/AuthDirective')
 const path = require('path')
 const fs = require('fs')
+const { ApolloServer, makeExecutableSchema } = require('apollo-server-lambda')
+
+const resolvers = require('./resolvers')
+const DefaultDirective = require('./directives/DefaultDirective')
+const AuthDirective = require('./directives/AuthDirective')
+
 const typeDefs = fs.readFileSync(path.join(__dirname, './schema.graphql'), { encoding: 'utf8' })
 
 const getUserId = (event) => {
